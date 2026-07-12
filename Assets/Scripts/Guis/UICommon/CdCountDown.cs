@@ -4,8 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using AssemblyCSharp;
 
-public class CdCountDown : MonoBehaviour
-{
+public class CdCountDown : MonoBehaviour {
     public UISprite cdSlider;
 
     private float timeLimit;
@@ -18,29 +17,22 @@ public class CdCountDown : MonoBehaviour
 
     float start = 0f;
 
-    void Start()
-    {
-        //if(cdSlider == null)
-        //    cdSlider = transform.FindChild("Progress Bar").GetComponent<UISlider>();
+    void Start() {
+        // if(cdSlider == null)
+        //     cdSlider = transform.FindChild("Progress Bar").GetComponent<UISlider>();
         SetCdShow(false);
     }
 
-    void Update()
-    {
-        DoCdCount();
-    }
+    void Update() { DoCdCount(); }
 
-    public void SetCdShow(bool visiable)
-    {
+    public void SetCdShow(bool visiable) {
         cdSlider.fillAmount = 1;
-        if (cdSlider.gameObject.activeInHierarchy != visiable)
-        {
+        if (cdSlider.gameObject.activeInHierarchy != visiable) {
             cdSlider.gameObject.SetActive(visiable);
         }
     }
 
-    public void StartCdCountDown(float time, float last)
-    {
+    public void StartCdCountDown(float time, float last) {
         if (canCountCd)
             return;
         timeLimit = time;
@@ -51,10 +43,8 @@ public class CdCountDown : MonoBehaviour
         StartCountTime = DateTime.Now;
         canCountCd = true;
     }
-    public void EndCdCountDown()
-    {
-        if (cdSlider.gameObject.activeInHierarchy)
-        {
+    public void EndCdCountDown() {
+        if (cdSlider.gameObject.activeInHierarchy) {
             cdSlider.gameObject.SetActive(false);
         }
         cdSlider.fillAmount = 0;
@@ -63,13 +53,11 @@ public class CdCountDown : MonoBehaviour
             CdCountDownEvent(this);
     }
 
-    void DoCdCount()
-    {
+    void DoCdCount() {
         if (!canCountCd)
             return;
-        TimeSpan endtime = DateTime.Now - StartCountTime; 
-        if (endtime.TotalSeconds >= (timeLimit - start))
-        {
+        TimeSpan endtime = DateTime.Now - StartCountTime;
+        if (endtime.TotalSeconds >= (timeLimit - start)) {
             EndCdCountDown();
             return;
         }
@@ -77,4 +65,3 @@ public class CdCountDown : MonoBehaviour
         cdSlider.fillAmount = 1f - (start / timeLimit) - ((float)endtime.TotalSeconds / timeLimit);
     }
 }
-

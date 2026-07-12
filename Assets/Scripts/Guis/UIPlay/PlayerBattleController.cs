@@ -5,11 +5,7 @@ using BlGame.GameEntity;
 using BlGame;
 public class PlayerBattleController : MonoBehaviour {
     ButtonOnPress toggle;
-    public static PlayerBattleController Instance
-    {
-        set;
-        get;
-    }
+    public static PlayerBattleController Instance { set; get; }
     ButtonOnPress CloseBtn;
 
     UIToggle RecordToggle;
@@ -21,8 +17,7 @@ public class PlayerBattleController : MonoBehaviour {
         BattleAttribute,
         BattleSystemSet,
     }
-    enum SystemSet
-    {
+    enum SystemSet {
         SoundButton,
         MusicButton,
         EffectButton,
@@ -32,8 +27,8 @@ public class PlayerBattleController : MonoBehaviour {
     /// <summary>
     /// 实时战斗信息
     /// </summary>
-    List<BattleRealInfo> AllBlueTeam = new List<BattleRealInfo>();//date
-    List<BattleRealInfo> AllRedTeam = new List<BattleRealInfo>();//date
+    List<BattleRealInfo> AllBlueTeam = new List<BattleRealInfo>();  // date
+    List<BattleRealInfo> AllRedTeam = new List<BattleRealInfo>();   // date
     BattleCurrInfo BattleState = BattleCurrInfo.BattleNull;
     /// <summary>
     /// 个人战斗属性
@@ -55,14 +50,12 @@ public class PlayerBattleController : MonoBehaviour {
     ButtonOnPress RangeBtn;
     GameObject[] objOn = new GameObject[4];
     GameObject[] ojbOff = new GameObject[4];
-    void Awake()
-    {
+    void Awake() {
         Instance = this;
         Init();
     }
     Transform tran = null;
-    void Init()
-    {
+    void Init() {
         toggle = transform.Find("InfoBtn").GetComponent<ButtonOnPress>();
         tran = transform.Find("Information");
         RecordToggle = tran.Find("BattleBtn").GetComponent<UIToggle>();
@@ -72,14 +65,12 @@ public class PlayerBattleController : MonoBehaviour {
 
         Transform temp = tran.Find("BattleInfo/Team/BlueTeam");
         int index = temp.childCount;
-        for (int i = 0; i < index; i++)
-        {
+        for (int i = 0; i < index; i++) {
             AllBlueTeam.Add(new BattleRealInfo(temp.Find("Player" + (i + 1))));
         }
         temp = tran.Find("BattleInfo/Team/RedTeam");
         index = temp.childCount;
-        for (int i = 0; i < index; i++)
-        {
+        for (int i = 0; i < index; i++) {
             AllRedTeam.Add(new BattleRealInfo(temp.Find("Player" + (i + 1))));
         }
         PlayerSpeed = tran.Find("StatusInfo/Speed/Num").GetComponent<UILabel>();
@@ -108,7 +99,7 @@ public class PlayerBattleController : MonoBehaviour {
         objOn[3] = RangeBtn.transform.Find("On").gameObject;
         ojbOff[3] = RangeBtn.transform.Find("Off").gameObject;
 
-        SoundBtn.AddListener((int)SystemSet.SoundButton,SoundButtonPress);
+        SoundBtn.AddListener((int)SystemSet.SoundButton, SoundButtonPress);
         MusicBtn.AddListener((int)SystemSet.MusicButton, SoundButtonPress);
         EffectBtn.AddListener((int)SystemSet.EffectButton, SoundButtonPress);
         RangeBtn.AddListener((int)SystemSet.RangeButton, SoundButtonPress);
@@ -116,24 +107,19 @@ public class PlayerBattleController : MonoBehaviour {
         toggle.AddListener(OnPress);
     }
 
-    private void ClosePress(int ie, bool pressed)
-    {
-        tran.parent.gameObject.SetActive(false);
-    }
+    private void ClosePress(int ie, bool pressed) { tran.parent.gameObject.SetActive(false); }
 
-    private void OnPress(int ie, bool pressed)
-    {
+    private void OnPress(int ie, bool pressed) {
         tran.parent.gameObject.SetActive(true);
         ShowBattle();
-    }    
-    void OnEnable()
-    {
+    }
+    void OnEnable() {
         EventDelegate.Add(RecordToggle.onChange, ShowRecordAttrSet);
         EventDelegate.Add(AttributeToggle.onChange, ShowRecordAttrSet);
         EventDelegate.Add(SystemSetToggle.onChange, ShowRecordAttrSet);
-        SetSave(ref SoundOpenState, UIGameSetting.soundKey,SystemSet.SoundButton);
-        SetSave(ref MusicOpenState, UIGameSetting.voiceKey,SystemSet.MusicButton);
-        SetSave(ref EffectOpenState, EffectVoc,SystemSet.EffectButton);
+        SetSave(ref SoundOpenState, UIGameSetting.soundKey, SystemSet.SoundButton);
+        SetSave(ref MusicOpenState, UIGameSetting.voiceKey, SystemSet.MusicButton);
+        SetSave(ref EffectOpenState, EffectVoc, SystemSet.EffectButton);
         SetSave(ref RangeOpenState, RangeVoc, SystemSet.RangeButton);
         EventCenter.AddListener(EGameEvent.eGameEvent_AllPlayerGoods, Record);
         EventCenter.AddListener(EGameEvent.eGameEvent_AllPlayerAssist, Record);
@@ -141,21 +127,14 @@ public class PlayerBattleController : MonoBehaviour {
         EventCenter.AddListener(EGameEvent.eGameEvent_AllPlayerDeaths, Record);
         EventCenter.AddListener(EGameEvent.eGameEvent_AllPlayerLevel, Record);
     }
-    void ShowRecordAttrSet()
-    {
+    void ShowRecordAttrSet() {
         UIToggle currToggle = UIToggle.current;
-        if (currToggle != null && currToggle.value)
-        {
-            if (currToggle == RecordToggle)
-            {
+        if (currToggle != null && currToggle.value) {
+            if (currToggle == RecordToggle) {
                 Record();
-            }
-            else if (currToggle == AttributeToggle)
-            {
+            } else if (currToggle == AttributeToggle) {
                 BattleAttr();
-            }else if (currToggle == SystemSetToggle)
-            {
-                
+            } else if (currToggle == SystemSetToggle) {
             }
         }
     }
@@ -168,33 +147,27 @@ public class PlayerBattleController : MonoBehaviour {
     private bool EffectOpenState = true;
     private bool RangeOpenState = true;
 
-    void SetSave(ref bool saveState, string key, SystemSet systemSet)
-    {
+    void SetSave(ref bool saveState, string key, SystemSet systemSet) {
         int state = 0;
-        if (PlayerPrefs.HasKey(key))
-        {
+        if (PlayerPrefs.HasKey(key)) {
             state = PlayerPrefs.GetInt(key);
             saveState = (state == 1) ? true : false;
-        }
-        else
-        {
+        } else {
             state = saveState ? 1 : 0;
             PlayerPrefs.SetInt(key, state);
         }
         Save(ref saveState, key, systemSet);
     }
 
-    void Save(ref bool saveState, string key,SystemSet systemSet)
-    {
+    void Save(ref bool saveState, string key, SystemSet systemSet) {
         objOn[(int)systemSet].SetActive(saveState);
         ojbOff[(int)systemSet].SetActive(!saveState);
-        //saveState = !saveState;
+        // saveState = !saveState;
         int state = saveState ? 1 : 0;
         PlayerPrefs.SetInt(key, state);
         Debug.LogError("save " + key + " state = " + saveState);
-        
-        switch (systemSet)
-        {
+
+        switch (systemSet) {
             case SystemSet.SoundButton:
                 AudioManager.Instance.EnableSound(saveState);
                 break;
@@ -202,7 +175,7 @@ public class PlayerBattleController : MonoBehaviour {
                 AudioManager.Instance.EnableVoice(saveState);
                 break;
             case SystemSet.EffectButton:
-                
+
                 break;
             case SystemSet.RangeButton:
                 if (PlayerManager.Instance.LocalPlayer != null && saveState)
@@ -211,13 +184,10 @@ public class PlayerBattleController : MonoBehaviour {
                     PlayerManager.Instance.LocalPlayer.RemoveAreaCircle();
                 break;
         }
-        
     }
 
-    private void SoundButtonPress(int ie, bool pressed)
-    {
-        switch ((SystemSet)ie)
-        {
+    private void SoundButtonPress(int ie, bool pressed) {
+        switch ((SystemSet)ie) {
             case SystemSet.SoundButton:
                 SoundOpenState = !SoundOpenState;
                 Save(ref SoundOpenState, UIGameSetting.soundKey, (SystemSet)ie);
@@ -236,21 +206,17 @@ public class PlayerBattleController : MonoBehaviour {
                 break;
         }
     }
-    void Record()
-    {
+    void Record() {
         int i = 0;
-        foreach (var item in BattleingData.AllBlueHeroBattle)
-        {
+        foreach (var item in BattleingData.AllBlueHeroBattle) {
             AllBlueTeam[i++].ShowBattleInfo(item.Value);
         }
         i = 0;
-        foreach (var item in BattleingData.AllRedHeroBattle)
-        {
+        foreach (var item in BattleingData.AllRedHeroBattle) {
             AllRedTeam[i++].ShowBattleInfo(item.Value);
         }
     }
-    void BattleAttr()
-    {
+    void BattleAttr() {
         BattleState = BattleCurrInfo.BattleAttribute;
         PlayerSpeed.text = BattleingData.Instance.PlayerSpeed.ToString();
         AttackInterval.text = BattleingData.Instance.AttackInterval.ToString();
@@ -261,24 +227,17 @@ public class PlayerBattleController : MonoBehaviour {
         PhysicDef.text = BattleingData.Instance.PhysicDef.ToString();
         SpellsDef.text = BattleingData.Instance.SpellsDef.ToString();
     }
-    void ShowBattle()
-    {
-        if (BattleState == BattleCurrInfo.BattleRecord)
-        {
+    void ShowBattle() {
+        if (BattleState == BattleCurrInfo.BattleRecord) {
             Record();
-        }
-        else if (BattleState == BattleCurrInfo.BattleAttribute)
-        {
+        } else if (BattleState == BattleCurrInfo.BattleAttribute) {
             BattleAttr();
-        }
-        else if (BattleState == BattleCurrInfo.BattleSystemSet)
-        {
+        } else if (BattleState == BattleCurrInfo.BattleSystemSet) {
             BattleState = BattleCurrInfo.BattleSystemSet;
         }
     }
 
-    void OnDisable()
-    {
+    void OnDisable() {
         EventDelegate.Remove(RecordToggle.onChange, ShowRecordAttrSet);
         EventDelegate.Remove(AttributeToggle.onChange, ShowRecordAttrSet);
         EventDelegate.Remove(SystemSetToggle.onChange, ShowRecordAttrSet);
@@ -288,17 +247,12 @@ public class PlayerBattleController : MonoBehaviour {
         EventCenter.RemoveListener(EGameEvent.eGameEvent_AllPlayerDeaths, Record);
         EventCenter.RemoveListener(EGameEvent.eGameEvent_AllPlayerLevel, Record);
     }
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-    public class BattleRealInfo
-    {
+    // Use this for initialization
+    void Start() {}
+
+    // Update is called once per frame
+    void Update() {}
+    public class BattleRealInfo {
         private Transform temp;
         public UISprite PlayerIcon;
         public UILabel PlayerName;
@@ -309,16 +263,12 @@ public class PlayerBattleController : MonoBehaviour {
         public UILabel Assist;
         public Dictionary<int, UISprite> PlayerGoodsDic = new Dictionary<int, UISprite>();
 
-        public void ShowBattleInfo()
-        {
- 
-        }
-        
-        public BattleRealInfo(Transform temp)
-        {
+        public void ShowBattleInfo() {}
+
+        public BattleRealInfo(Transform temp) {
             // TODO: Complete member initialization
             this.temp = temp;
-            PlayerName= temp.Find("Name/Label").GetComponent<UILabel>();
+            PlayerName = temp.Find("Name/Label").GetComponent<UILabel>();
             PlayerKills = temp.Find("Kill").GetComponent<UILabel>();
             PlayerLevel = temp.Find("HeadPhoto/Level").GetComponent<UILabel>();
             PlayerDeath = temp.Find("Death").GetComponent<UILabel>();
@@ -328,16 +278,14 @@ public class PlayerBattleController : MonoBehaviour {
             SetVib(false);
             Transform tran = temp.Find("Items");
             int index = tran.childCount;
-            for (int i = 0; i < index; i++)
-            {
+            for (int i = 0; i < index; i++) {
                 string str = "Item" + (i + 1) + "/icon";
                 UISprite sp = tran.Find(str).GetComponent<UISprite>();
                 sp.gameObject.SetActive(false);
                 PlayerGoodsDic.Add((i + 1), sp);
             }
         }
-        void SetVib(bool isVib)
-        {
+        void SetVib(bool isVib) {
             PlayerName.gameObject.SetActive(isVib);
             PlayerKills.gameObject.SetActive(isVib);
             PlayerLevel.gameObject.SetActive(isVib);
@@ -346,8 +294,7 @@ public class PlayerBattleController : MonoBehaviour {
             PlayerIcon.gameObject.SetActive(isVib);
             Assist.gameObject.SetActive(isVib);
         }
-        internal void ShowBattleInfo(HeroBattleInfo heroBattleInfo)
-        {
+        internal void ShowBattleInfo(HeroBattleInfo heroBattleInfo) {
             SetVib(true);
             PlayerName.text = heroBattleInfo.HeroName;
             PlayerLevel.text = heroBattleInfo.Level.ToString();
@@ -357,24 +304,18 @@ public class PlayerBattleController : MonoBehaviour {
             PlayerPlains.text = heroBattleInfo.LastHit.ToString();
             Assist.text = heroBattleInfo.Assist.ToString();
             int i = 1;
-            if (heroBattleInfo.GetItemsInfo() != null)
-            {
-                foreach (var item in PlayerGoodsDic)
-                {
+            if (heroBattleInfo.GetItemsInfo() != null) {
+                foreach (var item in PlayerGoodsDic) {
                     item.Value.gameObject.SetActive(true);
-                    int id = heroBattleInfo.GetId( i++);
+                    int id = heroBattleInfo.GetId(i++);
                     item.Value.spriteName = "";
-                    if (id != 0 && ConfigReader.ItemXmlInfoDict.ContainsKey(id))
-                    {   
+                    if (id != 0 && ConfigReader.ItemXmlInfoDict.ContainsKey(id)) {
                         item.Value.spriteName = ConfigReader.ItemXmlInfoDict[id].sIcon;
                     }
                 }
-            }
-            else
-            {
-                foreach (var item in PlayerGoodsDic)
-                {
-                    //item.Value.gameObject.SetActive(false);
+            } else {
+                foreach (var item in PlayerGoodsDic) {
+                    // item.Value.gameObject.SetActive(false);
                     item.Value.spriteName = "";
                 }
             }

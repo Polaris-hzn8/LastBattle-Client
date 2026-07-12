@@ -6,40 +6,35 @@ using BlGame.GuideDate;
 using GameDefine;
 using BlGame.Resource;
 
-public class ReadGuidePopTipTaskConfig
-{
+public class ReadGuidePopTipTaskConfig {
+    XmlDocument xmlDoc = null;
 
-	XmlDocument xmlDoc = null;
-
-    public ReadGuidePopTipTaskConfig(string xmlFilePath)
-	{
-		//TextAsset xmlfile = Resources.Load(xmlFilePath) as TextAsset;
+    public ReadGuidePopTipTaskConfig(string xmlFilePath) {
+        // TextAsset xmlfile = Resources.Load(xmlFilePath) as TextAsset;
         ResourceUnit xmlfileUnit = ResourcesManager.Instance.loadImmediate(xmlFilePath, ResourceType.ASSET);
         TextAsset xmlfile = xmlfileUnit.Asset as TextAsset;
 
-		if(!xmlfile)
-		{
-			Debug.LogError(" error infos: 没有找到指定的xml文件："+xmlFilePath);
-		}		
+        if (!xmlfile) {
+            Debug.LogError(" error infos: 没有找到指定的xml文件：" + xmlFilePath);
+        }
 
-		xmlDoc = new XmlDocument();
-		xmlDoc.LoadXml(xmlfile.text);
+        xmlDoc = new XmlDocument();
+        xmlDoc.LoadXml(xmlfile.text);
 
         XmlNodeList infoNodeList = xmlDoc.SelectSingleNode("PopWindow").ChildNodes;
-		
-		for(int i = 0;i < infoNodeList.Count;i++)//(XmlNode xNode in infoNodeList)
-		{
-			if((infoNodeList[i] as XmlElement).GetAttributeNode("id") == null)	continue;
-			
-			string typeName = (infoNodeList[i] as XmlElement).GetAttributeNode("id").InnerText;
+
+        for (int i = 0; i < infoNodeList.Count; i++)  //(XmlNode xNode in infoNodeList)
+        {
+            if ((infoNodeList[i] as XmlElement).GetAttributeNode("id") == null)
+                continue;
+
+            string typeName = (infoNodeList[i] as XmlElement).GetAttributeNode("id").InnerText;
 
             PopTipskInfo info = new PopTipskInfo();
             info.TaskId = Convert.ToInt32(typeName);
-			foreach(XmlElement xEle in infoNodeList[i].ChildNodes)
-			{				
-				#region 搜索
-                switch (xEle.Name)
-                {
+            foreach (XmlElement xEle in infoNodeList[i].ChildNodes) {
+#region 搜索
+                switch (xEle.Name) {
                     case "content":
                         info.mTip = Convert.ToString(xEle.InnerText);
                         break;
@@ -56,15 +51,14 @@ public class ReadGuidePopTipTaskConfig
                         info.mTime = Convert.ToSingle(xEle.InnerText);
                         break;
                 }
-				#endregion
-			}
+#endregion
+            }
             ConfigReader.guidePopTipTaskXmlDict.Add(info.TaskId, info);
-		}
-	}
+        }
+    }
 }
 
-public class PopTipskInfo
-{ 
+public class PopTipskInfo {
     public int TaskId;
     public string mTip;
     public string mResPath;
@@ -72,4 +66,3 @@ public class PopTipskInfo
     public Vector3 mRate;
     public float mTime;
 }
- 

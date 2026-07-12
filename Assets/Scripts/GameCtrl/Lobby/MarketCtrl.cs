@@ -8,19 +8,10 @@ using LSToGC;
 using System.IO;
 using System.Linq;
 
-namespace BlGame.Ctrl
-{
-    public class MarketCtrl : Singleton<MarketCtrl>
-    {
-        public void Enter()
-        {
-            EventCenter.Broadcast(EGameEvent.eGameEvent_MarketEnter);
-        }
+namespace BlGame.Ctrl {
+public class MarketCtrl : Singleton<MarketCtrl> {
+    public void Enter() { EventCenter.Broadcast(EGameEvent.eGameEvent_MarketEnter); }
 
-        public void Exit()
-        {
-            EventCenter.Broadcast(EGameEvent.eGameEvent_MarketExit);
-        }
-
-    }
+    public void Exit() { EventCenter.Broadcast(EGameEvent.eGameEvent_MarketExit); }
+}
 }

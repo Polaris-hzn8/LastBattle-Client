@@ -19,39 +19,31 @@ using BlGame.GameEntity;
 using BlGame;
 using BlGame.Skill;
 
-//技能飞行效果
-namespace BlGame.Effect
-{
-    public class SkillAreaEffect : IEffect
-    {
-        public SkillAreaEffect()
-        {
-            mType = IEffect.ESkillEffectType.eET_Area;
-        }
+// 技能飞行效果
+namespace BlGame.Effect {
+public class SkillAreaEffect : IEffect {
+    public SkillAreaEffect() { mType = IEffect.ESkillEffectType.eET_Area; }
 
-        public override void OnLoadComplete()
-        {
-            //Ientity enOwner;
-            //EntityManager.AllEntitys.TryGetValue(enOwnerKey, out enOwner);
+    public override void OnLoadComplete() {
+        // Ientity enOwner;
+        // EntityManager.AllEntitys.TryGetValue(enOwnerKey, out enOwner);
 
-            //if (enOwner == null || obj == null)
-            //{
-            //    isDead = true;
-            //    return;
-            //}
-            SkillAreaConfig skillInfo = ConfigReader.GetSkillAreaConfig(skillID);
-            Quaternion rt = Quaternion.LookRotation(dir);
-            GetTransform().rotation = rt;
-            GetTransform().position = fixPosition;           
-        }
-
- 
-        public override void Update()
-        {
-            if (isDead)
-                return;                   
-          
-            base.Update();
-        }
+        // if (enOwner == null || obj == null)
+        //{
+        //     isDead = true;
+        //     return;
+        // }
+        SkillAreaConfig skillInfo = ConfigReader.GetSkillAreaConfig(skillID);
+        Quaternion rt = Quaternion.LookRotation(dir);
+        GetTransform().rotation = rt;
+        GetTransform().position = fixPosition;
     }
+
+    public override void Update() {
+        if (isDead)
+            return;
+
+        base.Update();
+    }
+}
 }

@@ -10,22 +10,12 @@ using System.Linq;
 
 using BlGame.Model;
 
-namespace BlGame.Ctrl
-{
-    public class RuneCombineCtrl : Singleton<RuneCombineCtrl>
-    {
-        public void Enter()
-        {
-            EventCenter.Broadcast(EGameEvent.eGameEvent_RuneCombineWindowEnter);
-        }
+namespace BlGame.Ctrl {
+public class RuneCombineCtrl : Singleton<RuneCombineCtrl> {
+    public void Enter() { EventCenter.Broadcast(EGameEvent.eGameEvent_RuneCombineWindowEnter); }
 
-        public void Exit()
-        {
-            EventCenter.Broadcast(EGameEvent.eGameEvent_RuneCombineWindowExit);
-        }
+    public void Exit() { EventCenter.Broadcast(EGameEvent.eGameEvent_RuneCombineWindowExit); }
 
-        public RuneCombineCtrl()
-        {
-        }
-    }
+    public RuneCombineCtrl() {}
+}
 }

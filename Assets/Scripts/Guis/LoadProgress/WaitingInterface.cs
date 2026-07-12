@@ -2,45 +2,25 @@
 using System.Collections;
 
 public class WaitingInterface : MonoBehaviour {
-
-
     /// <summary>
     /// 连接实例
     /// </summary>
-    public static WaitingInterface Instance
-    {
-        private set;
-        get;
-    }
+    public static WaitingInterface Instance { private set; get; }
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    // Use this for initialization
+    void Start() {}
 
-    void OnEnable()
-    {
+    // Update is called once per frame
+    void Update() {}
+
+    void OnEnable() {
         Instance = this;
-        EventCenter.AddListener(EGameEvent.eGameEvent_EndWaiting, DestorySelf);   
+        EventCenter.AddListener(EGameEvent.eGameEvent_EndWaiting, DestorySelf);
     }
 
-    void OnDisble()
-    {
-        EventCenter.RemoveListener(EGameEvent.eGameEvent_EndWaiting, DestorySelf);   
-    }
+    void OnDisble() { EventCenter.RemoveListener(EGameEvent.eGameEvent_EndWaiting, DestorySelf); }
 
-    void OnDestroy()
-    {
-        EventCenter.RemoveListener(EGameEvent.eGameEvent_EndWaiting, DestorySelf);   
-    }
+    void OnDestroy() { EventCenter.RemoveListener(EGameEvent.eGameEvent_EndWaiting, DestorySelf); }
 
-    void DestorySelf()
-    {
-         DestroyImmediate(gameObject);
-    }
+    void DestorySelf() { DestroyImmediate(gameObject); }
 }

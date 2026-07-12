@@ -8,13 +8,10 @@ using System.Linq;
 using System;
 
 public class BattleingData {
-
     private static BattleingData instance = null;
-    public static BattleingData Instance
-    {
+    public static BattleingData Instance {
         get {
-            if (instance == null)
-            {
+            if (instance == null) {
                 instance = new BattleingData();
             }
             return instance;
@@ -30,8 +27,14 @@ public class BattleingData {
     public int PhysicDef;
     public int SpellsDef;
 
-    public void SetAttributes(int playerSpeed, int attackInterval, int attackRange, int resurgenceTime, int physicAttack, int spellsAttack, int physicDef,int spellsDef)
-    {
+    public void SetAttributes(int playerSpeed,
+                              int attackInterval,
+                              int attackRange,
+                              int resurgenceTime,
+                              int physicAttack,
+                              int spellsAttack,
+                              int physicDef,
+                              int spellsDef) {
         PlayerSpeed = playerSpeed;
         AttackInterval = attackInterval;
         AttackRange = attackRange;
@@ -44,62 +47,48 @@ public class BattleingData {
     public static Dictionary<UInt64, HeroBattleInfo> AllRedHeroBattle = new Dictionary<UInt64, HeroBattleInfo>();
     public static Dictionary<UInt64, HeroBattleInfo> AllBlueHeroBattle = new Dictionary<UInt64, HeroBattleInfo>();
 
-    public string GetGUIDName(UInt64 icon, EntityCampType camp)
-    {
-        if (EntityCampType.CampTypeA == (EntityCampType)camp)
-        {
-            foreach (var battle in AllBlueHeroBattle)
-            {
+    public string GetGUIDName(UInt64 icon, EntityCampType camp) {
+        if (EntityCampType.CampTypeA == (EntityCampType)camp) {
+            foreach (var battle in AllBlueHeroBattle) {
                 if (icon == battle.Key)
                     return battle.Value.HeroName;
             }
-        }
-        else
-        {
-            foreach (var battle in AllRedHeroBattle)
-            {
+        } else {
+            foreach (var battle in AllRedHeroBattle) {
                 if (icon == battle.Key)
                     return battle.Value.HeroName;
             }
         }
         return null;
     }
-    public void ClearAllGoods()
-    {
-        foreach (var item in AllRedHeroBattle)
-        {
+    public void ClearAllGoods() {
+        foreach (var item in AllRedHeroBattle) {
             item.Value.ClearGoods();
         }
-        foreach (var item in AllBlueHeroBattle)
-        {
+        foreach (var item in AllBlueHeroBattle) {
             item.Value.ClearGoods();
         }
     }
 
-    public void ClearAllBattleData()
-    {
+    public void ClearAllBattleData() {
         AllBlueHeroBattle.Clear();
         AllRedHeroBattle.Clear();
     }
 
-    public void AddPlayer(UInt64 sGUID, int temp , BattleDataType type,int index = 0, int goodsID = 0)
-    {
+    public void AddPlayer(UInt64 sGUID, int temp, BattleDataType type, int index = 0, int goodsID = 0) {
         HeroBattleInfo HeroBattle = null;
         Dictionary<UInt64, HeroBattleInfo> heroBattleDic = GetCamp(sGUID);
         if (heroBattleDic == null)
             return;
-        if (!heroBattleDic.TryGetValue(sGUID, out HeroBattle))
-        {
+        if (!heroBattleDic.TryGetValue(sGUID, out HeroBattle)) {
             HeroBattle = new HeroBattleInfo();
             SetDic(sGUID, HeroBattle);
         }
-        if (!EntityManager.AllEntitys.ContainsKey(sGUID))
-        {
+        if (!EntityManager.AllEntitys.ContainsKey(sGUID)) {
             return;
         }
         Ientity sEntity = EntityManager.AllEntitys[sGUID];
-        switch (type)
-        {
+        switch (type) {
             case BattleDataType.Cp:
                 HeroBattle.Cp = temp;
                 break;
@@ -127,35 +116,39 @@ public class BattleingData {
                 HeroBattle.Assist = temp;
                 break;
             case BattleDataType.Goods:
-                //if (goodsID != 0)
-                    HeroBattle.AddGoodItem(index, goodsID);
-                //else
-                //    HeroBattle.DelGoodsItem(index);
+                // if (goodsID != 0)
+                HeroBattle.AddGoodItem(index, goodsID);
+                // else
+                //     HeroBattle.DelGoodsItem(index);
                 break;
         }
         heroBattleDic[sGUID] = HeroBattle;
     }
 
-    public void DelPlayer(Dictionary<UInt64, HeroBattleInfo> heroBattleDic, UInt64 sGUID)
-    {
-        if (heroBattleDic.ContainsKey(sGUID))
-        {
+    public void DelPlayer(Dictionary<UInt64, HeroBattleInfo> heroBattleDic, UInt64 sGUID) {
+        if (heroBattleDic.ContainsKey(sGUID)) {
             heroBattleDic[sGUID] = null;
             heroBattleDic.Remove(sGUID);
         }
     }
-    public void AddInitPlayer(UInt64 sGUID, string name, int kills, int death, int Assist, int level, int lastHit, EntityCampType type, int heroid)    {
+    public void AddInitPlayer(UInt64 sGUID,
+                              string name,
+                              int kills,
+                              int death,
+                              int Assist,
+                              int level,
+                              int lastHit,
+                              EntityCampType type,
+                              int heroid) {
         HeroBattleInfo HeroBattle = null;
         Dictionary<UInt64, HeroBattleInfo> heroBattleDic = GetCamp(type);
         int id = heroid;
         HeroSelectConfigInfo info = ConfigReader.GetHeroSelectInfo(id);
-        if (info == null)
-        {
+        if (info == null) {
             Debug.LogError("HeroSeletCfg not Find heroId");
             return;
         }
-        if (!heroBattleDic.TryGetValue(sGUID, out HeroBattle))
-        {
+        if (!heroBattleDic.TryGetValue(sGUID, out HeroBattle)) {
             HeroBattle = new HeroBattleInfo();
             HeroBattle.SGUID = sGUID;
             HeroBattle.HeroName = name;
@@ -181,55 +174,39 @@ public class BattleingData {
         SetDic(sGUID, HeroBattle);
     }
 
-    Dictionary<UInt64, HeroBattleInfo> GetCamp(UInt64 sGUID)
-    {
-        if (AllBlueHeroBattle.ContainsKey(sGUID))
-        {
+    Dictionary<UInt64, HeroBattleInfo> GetCamp(UInt64 sGUID) {
+        if (AllBlueHeroBattle.ContainsKey(sGUID)) {
             return AllBlueHeroBattle;
-        }
-        else if (AllRedHeroBattle.ContainsKey(sGUID))
-        {
+        } else if (AllRedHeroBattle.ContainsKey(sGUID)) {
             return AllRedHeroBattle;
         }
         return null;
     }
 
-    public Dictionary<UInt64, HeroBattleInfo> GetCamp(EntityCampType type)
-    {
-        if (type == EntityCampType.CampTypeA)
-        {
+    public Dictionary<UInt64, HeroBattleInfo> GetCamp(EntityCampType type) {
+        if (type == EntityCampType.CampTypeA) {
             return AllBlueHeroBattle;
-        }
-        else if (type == EntityCampType.CampTypeB)
-        {
+        } else if (type == EntityCampType.CampTypeB) {
             return AllRedHeroBattle;
         }
         return null;
     }
-    void SetDic(UInt64 sGUID, HeroBattleInfo info)
-    {
-        if (info.campType == EntityCampType.CampTypeA)
-        {
+    void SetDic(UInt64 sGUID, HeroBattleInfo info) {
+        if (info.campType == EntityCampType.CampTypeA) {
             AllBlueHeroBattle[sGUID] = info;
-        }
-        else if (info.campType == EntityCampType.CampTypeB)
-        {
+        } else if (info.campType == EntityCampType.CampTypeB) {
             AllRedHeroBattle[sGUID] = info;
         }
     }
-    public void DelGood(UInt64 sGUID,int index)
-    {
+    public void DelGood(UInt64 sGUID, int index) {
         Dictionary<UInt64, HeroBattleInfo> heroBattleDic = GetCamp(sGUID);
-        if (heroBattleDic.ContainsKey(sGUID))
-        {
+        if (heroBattleDic.ContainsKey(sGUID)) {
             heroBattleDic[sGUID].DelGoodsItem(index);
         }
     }
 }
 
-
-public class HeroBattleInfo
-{
+public class HeroBattleInfo {
     public UInt64 SGUID;
     public string HeroName;
     public int Level;
@@ -237,47 +214,34 @@ public class HeroBattleInfo
     public int Deaths;
     public int Assist;
     public int HeadIcon;
-    public int LastHit;//
+    public int LastHit;  //
     public int Cp;
     public EntityCampType campType;
     public Dictionary<int, int> GoodsItemsInfo = new Dictionary<int, int>();
 
-    public Dictionary<int, int> GetItemsInfo()
-    {
-        return GoodsItemsInfo;
-    }
-    public void AddGoodItem(int index, int id)
-    {
-        if (!GoodsItemsInfo.ContainsKey(index))
-        {
+    public Dictionary<int, int> GetItemsInfo() { return GoodsItemsInfo; }
+    public void AddGoodItem(int index, int id) {
+        if (!GoodsItemsInfo.ContainsKey(index)) {
             GoodsItemsInfo.Add(index, id);
             return;
         }
         GoodsItemsInfo[index] = id;
     }
-    public void DelGoodsItem(int index)
-    {
-        if (GoodsItemsInfo.ContainsKey(index))
-        {
+    public void DelGoodsItem(int index) {
+        if (GoodsItemsInfo.ContainsKey(index)) {
             GoodsItemsInfo[index] = 0;
         }
     }
-    public int GetId(int index)
-    {
-        for (int i = 0; i < GoodsItemsInfo.Count; i++)
-        {
+    public int GetId(int index) {
+        for (int i = 0; i < GoodsItemsInfo.Count; i++) {
             int id = GoodsItemsInfo.ElementAt(i).Value;
             int temp = GoodsItemsInfo.ElementAt(i).Key;
-            if ((index) == temp)
-            {
+            if ((index) == temp) {
                 index = id;
                 return index;
             }
         }
         return 0;
     }
-    public void ClearGoods()
-    {
-        GoodsItemsInfo.Clear();
-    }
+    public void ClearGoods() { GoodsItemsInfo.Clear(); }
 }

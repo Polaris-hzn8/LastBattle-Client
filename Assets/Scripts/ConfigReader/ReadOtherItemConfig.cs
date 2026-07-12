@@ -4,8 +4,7 @@ using System.Xml;
 using System.Collections.Generic;
 using BlGame.Resource;
 
-public class OtherItemConfigInfo : System.Object
-{
+public class OtherItemConfigInfo : System.Object {
     public string sName;
     public uint effectid;
     public uint effectvalue;
@@ -16,16 +15,13 @@ public class OtherItemConfigInfo : System.Object
     public string icon;
 }
 
-public class ReadOtherItemConfig
-{
+public class ReadOtherItemConfig {
     XmlDocument xmlDoc = null;
-    public ReadOtherItemConfig(string xmlFilePath)
-    {
+    public ReadOtherItemConfig(string xmlFilePath) {
         ResourceUnit xmlfileUnit = ResourcesManager.Instance.loadImmediate(xmlFilePath, ResourceType.ASSET);
 
         TextAsset xmlfile = xmlfileUnit.Asset as TextAsset;
-        if (!xmlfile)
-        {
+        if (!xmlfile) {
             Debug.LogError(" error infos: 没有找到指定的xml文件：" + xmlFilePath);
         }
 
@@ -33,21 +29,17 @@ public class ReadOtherItemConfig
         xmlDoc.LoadXml(xmlfile.text);
 
         XmlNodeList infoNodeList = xmlDoc.SelectSingleNode("OtherItemCfg ").ChildNodes;
-        for (int i = 0; i < infoNodeList.Count; i++)
-        {
+        for (int i = 0; i < infoNodeList.Count; i++) {
             XmlAttribute xmlAttr = (infoNodeList[i] as XmlElement).GetAttributeNode("ID");
 
-            if (xmlAttr == null)
-            {
+            if (xmlAttr == null) {
                 continue;
             }
 
             OtherItemConfigInfo otherItemInfo = new OtherItemConfigInfo();
 
-            foreach (XmlElement xEle in infoNodeList[i].ChildNodes)
-            {
-                switch (xEle.Name)
-                {
+            foreach (XmlElement xEle in infoNodeList[i].ChildNodes) {
+                switch (xEle.Name) {
                     case "Name":
                         otherItemInfo.sName = xEle.InnerText;
                         break;
@@ -64,7 +56,7 @@ public class ReadOtherItemConfig
                         otherItemInfo.priceseries = Convert.ToUInt32(xEle.InnerText);
                         break;
                     case "bIsShowInShop":
-                        otherItemInfo.isShowInShop = Convert.ToUInt32(xEle.InnerText)==1?true:false;
+                        otherItemInfo.isShowInShop = Convert.ToUInt32(xEle.InnerText) == 1 ? true : false;
                         break;
                     case "Time":
                         otherItemInfo.time = Convert.ToInt32(xEle.InnerText);
@@ -79,4 +71,3 @@ public class ReadOtherItemConfig
         }
     }
 }
-

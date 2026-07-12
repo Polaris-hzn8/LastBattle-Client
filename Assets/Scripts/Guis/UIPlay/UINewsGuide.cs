@@ -1,4 +1,4 @@
-﻿using UnityEngine; 
+﻿using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,8 +9,7 @@ using System.Linq;
 using GameDefine;
 using BlGame.Resource;
 
-public class UINewsGuide : MonoBehaviour
-{
+public class UINewsGuide : MonoBehaviour {
     public static UINewsGuide Instance;
 
     bool isSet = false;
@@ -19,16 +18,15 @@ public class UINewsGuide : MonoBehaviour
 
     Dictionary<Ientity, GameObject> bTips = new Dictionary<Ientity, GameObject>();
 
-    void OnEnable()
-    {
+    void OnEnable() {
         Instance = this;
-        //EventCenter.AddListener<UInt64, int, int, int>(EGameEvent.eGameEvent_GuideKillTask, OnEvent);
+        // EventCenter.AddListener<UInt64, int, int, int>(EGameEvent.eGameEvent_GuideKillTask, OnEvent);
         EventCenter.AddListener<bool>(EGameEvent.eGameEvent_GuideShowBuildingTips, OnShowBuildingTips);
         isSet = false;
     }
 
     void OnDisable() {
-        //EventCenter.RemoveListener<UInt64, int, int, int>(EGameEvent.eGameEvent_GuideKillTask, OnEvent);
+        // EventCenter.RemoveListener<UInt64, int, int, int>(EGameEvent.eGameEvent_GuideKillTask, OnEvent);
         EventCenter.RemoveListener<bool>(EGameEvent.eGameEvent_GuideShowBuildingTips, OnShowBuildingTips);
     }
 
@@ -41,52 +39,45 @@ public class UINewsGuide : MonoBehaviour
         }
     }
 
-	float GetTipHeight(Ientity entity){
-		for (int i = 0; i < GuideBuildingTips.Instance.tipHeight.Length; i++) {
-			if(entity.NpcGUIDType == GuideBuildingTips.Instance.npcIdArray[i]){
-				return GuideBuildingTips.Instance.tipHeight[i];
-			}
-		}
-		return 5f;
-	}
+    float GetTipHeight(Ientity entity) {
+        for (int i = 0; i < GuideBuildingTips.Instance.tipHeight.Length; i++) {
+            if (entity.NpcGUIDType == GuideBuildingTips.Instance.npcIdArray[i]) {
+                return GuideBuildingTips.Instance.tipHeight[i];
+            }
+        }
+        return 5f;
+    }
 
-    void UpdatePosition(Ientity target,Transform obj)
-
-
-
+    void UpdatePosition(Ientity target, Transform obj)
 
     {
-
         if (Camera.main == null || GameMethod.GetUiCamera == null)
             return;
-		float height = GetTipHeight (target);
+        float height = GetTipHeight(target);
         // 血条对应在3d场景的位置
-		Vector3 pos_3d = target.realObject.transform.position + new Vector3(0f, height, 0f);
+        Vector3 pos_3d = target.realObject.transform.position + new Vector3(0f, height, 0f);
         // 血条对应在屏幕的位置
         Vector2 pos_screen = Camera.main.WorldToScreenPoint(pos_3d);
         // 血条对应在ui中的位置
         Vector3 pos_ui = GameMethod.GetUiCamera.ScreenToWorldPoint(pos_screen);
 
-        obj.position = Vector3.Slerp(transform.position, pos_ui, Time.time); 
-    } 
+        obj.position = Vector3.Slerp(transform.position, pos_ui, Time.time);
+    }
 
     void OnShowBuildingTips(bool show) {
-        if (show)
-        {
+        if (show) {
             bTips.Clear();
-			Dictionary<int, Ientity> dic = GuideBuildingTips.Instance.GetTipTargetDic(); 
-            for (int i = 0; i < dic.Count; i++)
-            {
-				int index = GetEntityIndexByNpcId(dic.ElementAt(i).Value.NpcGUIDType);
-				ResourceUnit objUnit = ResourcesManager.Instance.loadImmediate(GuideBuildingTips.Instance.pathArray[index], ResourceType.PREFAB);
+            Dictionary<int, Ientity> dic = GuideBuildingTips.Instance.GetTipTargetDic();
+            for (int i = 0; i < dic.Count; i++) {
+                int index = GetEntityIndexByNpcId(dic.ElementAt(i).Value.NpcGUIDType);
+                ResourceUnit objUnit = ResourcesManager.Instance.loadImmediate(
+                    GuideBuildingTips.Instance.pathArray[index], ResourceType.PREFAB);
                 GameObject obj = GameObject.Instantiate(objUnit.Asset) as GameObject;
-                obj.transform.parent = XueTiaoManager.Instance.transform; 
+                obj.transform.parent = XueTiaoManager.Instance.transform;
                 obj.transform.localScale = Vector3.one;
                 bTips.Add(dic.ElementAt(i).Value, obj);
             }
-        }
-        else
-        {
+        } else {
             for (int i = 0; i < bTips.Count; i++) {
                 GameObject.DestroyImmediate(bTips.ElementAt(i).Value);
             }
@@ -95,37 +86,32 @@ public class UINewsGuide : MonoBehaviour
         showBuildingTips = show;
     }
 
-	int  GetEntityIndexByNpcId(int npcId){ 
-		for (int i = 0; i < GuideBuildingTips.Instance.npcIdArray.Length; i++) {
-			if(GuideBuildingTips.Instance.npcIdArray[i] == npcId)		
-				return i;
-		}
-		return -1;
-	}
+    int GetEntityIndexByNpcId(int npcId) {
+        for (int i = 0; i < GuideBuildingTips.Instance.npcIdArray.Length; i++) {
+            if (GuideBuildingTips.Instance.npcIdArray[i] == npcId)
+                return i;
+        }
+        return -1;
+    }
 
-   
-
-    void OnEvent(UInt64 kill, int deadType, int deadId, int reason)
-    {
+    void OnEvent(UInt64 kill, int deadType, int deadId, int reason) {
         if (isSet)
             return;
-        Iselfplayer player  = PlayerManager.Instance.LocalPlayer;
+        Iselfplayer player = PlayerManager.Instance.LocalPlayer;
         bool isFirstBlood = false;
 
-        if (player.GameObjGUID == kill && SceneGuideTaskManager.Instance().IsFakeHero(deadId)) 
+        if (player.GameObjGUID == kill && SceneGuideTaskManager.Instance().IsFakeHero(deadId))
             isFirstBlood = true;
-        else if(player.NpcGUIDType == deadId && SceneGuideTaskManager.Instance().GetFakeHero(kill) != null)
+        else if (player.NpcGUIDType == deadId && SceneGuideTaskManager.Instance().GetFakeHero(kill) != null)
             isFirstBlood = true;
 
-        if (isFirstBlood)
-        {  
+        if (isFirstBlood) {
             string name = SceneGuideTaskManager.Instance().GetFakeHeroName(deadId);
             string readXml = ConfigReader.GetMsgInfo(10008).content;
-            MsgInfoManager.Instance.SetKills(MsgInfoManager.eKillMsgType.eFirstBlood, false, player.GameUserNick, name, readXml);
+            MsgInfoManager.Instance.SetKills(
+                MsgInfoManager.eKillMsgType.eFirstBlood, false, player.GameUserNick, name, readXml);
             MsgInfoManager.Instance.SetAuido(MsgInfoManager.eKillMsgType.eFirstBlood, false);
             isSet = true;
-        } 
-
+        }
     }
-    
 }

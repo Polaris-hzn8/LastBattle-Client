@@ -4,23 +4,19 @@ using System.Xml;
 using System.Collections.Generic;
 using BlGame.Resource;
 
-public class DailyBonusConfigInfo : System.Object
-{
+public class DailyBonusConfigInfo : System.Object {
     public string[] n32Type;
     public string[] n32ItemID;
     public string[] n32ItemNum;
 }
 
-public class ReadDailyBonusConfig
-{
+public class ReadDailyBonusConfig {
     XmlDocument xmlDoc = null;
-    public ReadDailyBonusConfig(string xmlFilePath)
-    {
+    public ReadDailyBonusConfig(string xmlFilePath) {
         ResourceUnit xmlfileUnit = ResourcesManager.Instance.loadImmediate(xmlFilePath, ResourceType.ASSET);
 
         TextAsset xmlfile = xmlfileUnit.Asset as TextAsset;
-        if (!xmlfile)
-        {
+        if (!xmlfile) {
             Debug.LogError(" error infos: 没有找到指定的xml文件：" + xmlFilePath);
         }
 
@@ -28,21 +24,17 @@ public class ReadDailyBonusConfig
         xmlDoc.LoadXml(xmlfile.text);
 
         XmlNodeList infoNodeList = xmlDoc.SelectSingleNode("DailyBonus ").ChildNodes;
-        for (int i = 0; i < infoNodeList.Count; i++)
-        {
+        for (int i = 0; i < infoNodeList.Count; i++) {
             XmlAttribute xmlAttr = (infoNodeList[i] as XmlElement).GetAttributeNode("n32Days");
 
-            if (xmlAttr == null)
-            {
+            if (xmlAttr == null) {
                 continue;
             }
 
             DailyBonusConfigInfo dailBonusInfo = new DailyBonusConfigInfo();
 
-            foreach (XmlElement xEle in infoNodeList[i].ChildNodes)
-            {
-                switch (xEle.Name)
-                {
+            foreach (XmlElement xEle in infoNodeList[i].ChildNodes) {
+                switch (xEle.Name) {
                     case "n32Type":
                         dailBonusInfo.n32Type = xEle.InnerText.Split(new char[] { ',' });
                         break;
@@ -59,4 +51,3 @@ public class ReadDailyBonusConfig
         }
     }
 }
-

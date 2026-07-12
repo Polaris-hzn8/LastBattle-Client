@@ -8,9 +8,6 @@ using LSToGC;
 using System.IO;
 using System.Linq;
 
-namespace BlGame.Model
-{
-    class RuneCombineModel : Singleton<RuneCombineModel>
-    {
-    }
+namespace BlGame.Model {
+class RuneCombineModel : Singleton<RuneCombineModel> {}
 }

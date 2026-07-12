@@ -2,9 +2,7 @@
 using UnityEditor;
 using System.Collections;
 
-
-public class fyRibbonEditor : Editor
-{
+public class fyRibbonEditor : Editor {
     private static bool bShowMatrix = true;
     private static bool bShowColor = false;
     private static bool bShowMatType = true;
@@ -12,84 +10,72 @@ public class fyRibbonEditor : Editor
 
     private static bool bShowRibbonInfo = true;
     private static Texture2D tex;
-   
 
-
-
-    public void OverrideGUI(fyRibbonTrail ribbon)
-    {
-        //水平样式设置开始
+    public void OverrideGUI(fyRibbonTrail ribbon) {
+        // 水平样式设置开始
         GUILayout.BeginVertical();
 
         bShowRibbonInfo = EditorGUILayout.Foldout(bShowRibbonInfo, "丝带基本信息");
-        if (bShowRibbonInfo)
-        {
-            //#region Ribbon最大段数
+        if (bShowRibbonInfo) {
+            // #region Ribbon最大段数
             EditorGUI.BeginChangeCheck();
 
-            //maxElement
+            // maxElement
             GUILayout.BeginHorizontal();
             GUILayout.Label("最大段数", GUILayout.Width(130));
             ribbon.maxElement = EditorGUILayout.IntField(ribbon.maxElement);
             GUILayout.EndHorizontal();
 
-            //segLength
+            // segLength
             GUILayout.BeginHorizontal();
             GUILayout.Label("每段长度", GUILayout.Width(130));
             ribbon.segLength = EditorGUILayout.FloatField(ribbon.segLength);
             GUILayout.EndHorizontal();
 
-            //segWidth
+            // segWidth
             GUILayout.BeginHorizontal();
             GUILayout.Label("每段宽度", GUILayout.Width(130));
             ribbon.segWidth = EditorGUILayout.FloatField(ribbon.segWidth);
             GUILayout.EndHorizontal();
 
-            if (EditorGUI.EndChangeCheck())
-            {
-                //Debug.Log("the max element changed");
+            if (EditorGUI.EndChangeCheck()) {
+                // Debug.Log("the max element changed");
                 ribbon.ReCreate();
             }
 
-
-            //渲染混合类型
+            // 渲染混合类型
             EditorGUI.BeginChangeCheck();
             ribbon.mBlendType = (fyRibbonTrail.BlendType)EditorGUILayout.EnumPopup("渲染混合类型", ribbon.mBlendType);
-            if (EditorGUI.EndChangeCheck())
-            {
+            if (EditorGUI.EndChangeCheck()) {
                 bShowMatType = true;
-                //Shader shader = null;
-                if (ribbon.mBlendType == fyRibbonTrail.BlendType.Additive_Type)
-                {
-                    if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Common_Type || ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Repeat_Type)
+                // Shader shader = null;
+                if (ribbon.mBlendType == fyRibbonTrail.BlendType.Additive_Type) {
+                    if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Common_Type ||
+                        ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Repeat_Type)
                         ribbon.mShader = Shader.Find("fyShader/Additive");
                     else if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Sequence_Type)
                         ribbon.mShader = Shader.Find("fyShader/AdditiveSequence");
-                }
-                else if (ribbon.mBlendType == fyRibbonTrail.BlendType.Alpha_Type)
-                {
-                    if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Common_Type || ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Repeat_Type)
+                } else if (ribbon.mBlendType == fyRibbonTrail.BlendType.Alpha_Type) {
+                    if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Common_Type ||
+                        ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Repeat_Type)
                         ribbon.mShader = Shader.Find("fyShader/Alpha");
                     else if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Sequence_Type)
                         ribbon.mShader = Shader.Find("fyShader/AlphaSequence");
-                }
-                else if (ribbon.mBlendType == fyRibbonTrail.BlendType.Replace_Type)
-                {
-                    if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Common_Type || ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Repeat_Type)
+                } else if (ribbon.mBlendType == fyRibbonTrail.BlendType.Replace_Type) {
+                    if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Common_Type ||
+                        ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Repeat_Type)
                         ribbon.mShader = Shader.Find("fyShader/Replace");
                     else if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Sequence_Type)
                         ribbon.mShader = Shader.Find("fyShader/ReplaceSequence");
-                }
-                else if (ribbon.mBlendType == fyRibbonTrail.BlendType.Distort_Additive)
-                {
+                } else if (ribbon.mBlendType == fyRibbonTrail.BlendType.Distort_Additive) {
                     ribbon.mShader = Shader.Find("fyShader/fyDistortAdditive");
                     bShowMatType = false;
                 }
 
-                //编辑器
+                // 编辑器
                 if (!Application.isPlaying)
                     ribbon.GetComponent<Renderer>().sharedMaterial.shader = ribbon.mShader;
-                //运行
+                // 运行
                 else
                     ribbon.GetComponent<Renderer>().material.shader = ribbon.mShader;
             }
@@ -100,58 +86,53 @@ public class fyRibbonEditor : Editor
             if (ribbon.mOrientType == fyRibbonTrail.OrientType.World_Type)
                 ribbon.mNormal = EditorGUILayout.Vector3Field("法线", ribbon.mNormal);
 
-            if (EditorGUI.EndChangeCheck())
-            {
+            if (EditorGUI.EndChangeCheck()) {
                 ribbon.UpdateRibbon(0);
             }
         }
 
-      
-
-        //材质寻址类型
+        // 材质寻址类型
         EditorGUI.BeginChangeCheck();
         if (bShowMatType)
-            ribbon.mMaterialType = (fyRibbonTrail.MaterialAddressType)EditorGUILayout.EnumPopup("贴图寻址类型", ribbon.mMaterialType);
+            ribbon.mMaterialType =
+                (fyRibbonTrail.MaterialAddressType)EditorGUILayout.EnumPopup("贴图寻址类型", ribbon.mMaterialType);
 
-        //UV长度
-        if(ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Repeat_Type)
-        {
+        // UV长度
+        if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Repeat_Type) {
             ribbon.mUVLength = EditorGUILayout.FloatField("UV长度", ribbon.mUVLength);
         }
 
-        //纹理变换
+        // 纹理变换
         bShowMatrix = EditorGUILayout.Foldout(bShowMatrix, "纹理旋转");
-        if (bShowMatrix)
-        {
-            //矩阵变换
+        if (bShowMatrix) {
+            // 矩阵变换
             EditorGUI.BeginChangeCheck();
 
-            //初始平移
+            // 初始平移
             GUILayout.BeginHorizontal();
             ribbon.mOffset = EditorGUILayout.Vector2Field("初始平移", ribbon.mOffset);
             GUILayout.EndHorizontal();
 
-            //初始旋转
+            // 初始旋转
             GUILayout.BeginHorizontal();
             GUILayout.Label("初始旋转", GUILayout.Width(130));
             ribbon.mOffRot = EditorGUILayout.FloatField(ribbon.mOffRot);
             GUILayout.EndHorizontal();
 
-            if (EditorGUI.EndChangeCheck())
-            {
-                //Debug.Log("1111");
+            if (EditorGUI.EndChangeCheck()) {
+                // Debug.Log("1111");
                 ribbon.InitMatrix();
             }
 
-            //平移，旋转，缩放
+            // 平移，旋转，缩放
             EditorGUI.BeginChangeCheck();
 
-            //初始平移
+            // 初始平移
             GUILayout.BeginHorizontal();
             ribbon.mTranslate = EditorGUILayout.Vector2Field("平移", ribbon.mTranslate);
             GUILayout.EndHorizontal();
 
-            //初始旋转
+            // 初始旋转
             GUILayout.BeginHorizontal();
             ribbon.mRotate = EditorGUILayout.FloatField("旋转", ribbon.mRotate);
             GUILayout.EndHorizontal();
@@ -160,78 +141,63 @@ public class fyRibbonEditor : Editor
             ribbon.mScale = EditorGUILayout.Vector2Field("缩放", ribbon.mScale);
             GUILayout.EndHorizontal();
 
-
-            if (EditorGUI.EndChangeCheck())
-            {
+            if (EditorGUI.EndChangeCheck()) {
                 ribbon.UpdateMatrix();
             }
         }
 
-      
-
-
-
-        if (EditorGUI.EndChangeCheck())
-        {
-            //Shader shader = null;
-            if (ribbon.mBlendType == fyRibbonTrail.BlendType.Additive_Type)
-            {
-                if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Common_Type || ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Repeat_Type)
+        if (EditorGUI.EndChangeCheck()) {
+            // Shader shader = null;
+            if (ribbon.mBlendType == fyRibbonTrail.BlendType.Additive_Type) {
+                if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Common_Type ||
+                    ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Repeat_Type)
                     ribbon.mShader = Shader.Find("fyShader/Additive");
                 else if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Sequence_Type)
                     ribbon.mShader = Shader.Find("fyShader/AdditiveSequence");
-            }
-            else if (ribbon.mBlendType == fyRibbonTrail.BlendType.Alpha_Type)
-            {
-                if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Common_Type || ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Repeat_Type)
+            } else if (ribbon.mBlendType == fyRibbonTrail.BlendType.Alpha_Type) {
+                if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Common_Type ||
+                    ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Repeat_Type)
                     ribbon.mShader = Shader.Find("fyShader/Alpha");
                 else if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Sequence_Type)
                     ribbon.mShader = Shader.Find("fyShader/AlphaSequence");
-            }
-            else if (ribbon.mBlendType == fyRibbonTrail.BlendType.Replace_Type)
-            {
-                if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Common_Type || ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Repeat_Type)
+            } else if (ribbon.mBlendType == fyRibbonTrail.BlendType.Replace_Type) {
+                if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Common_Type ||
+                    ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Repeat_Type)
                     ribbon.mShader = Shader.Find("fyShader/Replace");
                 else if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Sequence_Type)
                     ribbon.mShader = Shader.Find("fyShader/ReplaceSequence");
             }
 
-            //编辑器
+            // 编辑器
             if (!Application.isPlaying)
                 ribbon.GetComponent<Renderer>().sharedMaterial.shader = ribbon.mShader;
-            //运行
+            // 运行
             else
                 ribbon.GetComponent<Renderer>().material.shader = ribbon.mShader;
 
-            //普通寻址
-            if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Common_Type)
-            {
+            // 普通寻址
+            if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Common_Type) {
                 bShowMatrix = true;
-     
-            }
-            else if(ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Repeat_Type)
-            {
-                bShowMatrix= true;
-               
-            }
-            //序列帧
-            else
-            {
+
+            } else if (ribbon.mMaterialType == fyRibbonTrail.MaterialAddressType.Repeat_Type) {
                 bShowMatrix = true;
-    
+
+            }
+            // 序列帧
+            else {
+                bShowMatrix = true;
             }
         }
-        //水平样式设置结束
+        // 水平样式设置结束
         GUILayout.EndVertical();
 
-        //颜色控制
+        // 颜色控制
         EditorGUI.BeginChangeCheck();
 
         bShowColor = EditorGUILayout.Foldout(bShowColor, "颜色控制");
         EditorGUI.BeginChangeCheck();
         bColorNum = EditorGUILayout.IntField("颜色个数:", bColorNum);
-        if (EditorGUI.EndChangeCheck())
-        {
+        if (EditorGUI.EndChangeCheck()) {
             ribbon.colorKey = new ColorKey[bColorNum];
         }
 
@@ -241,37 +207,27 @@ public class fyRibbonEditor : Editor
         else
             bShowColor = false;
 
-        //颜色控制
-        if (bShowColor)
-        {
-
-            for (int i = 0; i < bColorNum; i++)
-            {
+        // 颜色控制
+        if (bShowColor) {
+            for (int i = 0; i < bColorNum; i++) {
                 GUILayout.BeginHorizontal();
-                if (ribbon.colorKey[i] != null)
-                {
+                if (ribbon.colorKey[i] != null) {
                     ribbon.colorKey[i].time = EditorGUILayout.FloatField("time:", ribbon.colorKey[i].time);
                     ribbon.colorKey[i].color = EditorGUILayout.ColorField(ribbon.colorKey[i].color);
                 }
                 GUILayout.EndHorizontal();
             }
-
         }
 
-        if (EditorGUI.EndChangeCheck())
-        {
+        if (EditorGUI.EndChangeCheck()) {
         }
 
         EditorGUI.BeginChangeCheck();
         ribbon.mTexture = (Texture2D)EditorGUILayout.ObjectField("Image", ribbon.mTexture, typeof(Texture2D), false);
-        if (EditorGUI.EndChangeCheck())
-        {
+        if (EditorGUI.EndChangeCheck()) {
             ribbon.ChangeTexture(ribbon.mTexture);
         }
     }
 
-
-    public override void OnInspectorGUI()
-    {      
-    }
+    public override void OnInspectorGUI() {}
 }

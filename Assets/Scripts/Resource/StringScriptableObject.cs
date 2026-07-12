@@ -6,12 +6,10 @@ using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
-#endif 
+#endif
 
-namespace BlGame.Resource
-{
-    public class StringScriptableObject:ScriptableObject
-    {
-        public string[] content;
-    }
+namespace BlGame.Resource {
+public class StringScriptableObject : ScriptableObject {
+    public string[] content;
+}
 }

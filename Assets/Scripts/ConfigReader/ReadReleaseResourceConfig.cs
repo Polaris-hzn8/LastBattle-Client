@@ -5,60 +5,43 @@ using System.Collections.Generic;
 using BlGame;
 using BlGame.Resource;
 
-//读取需要强制释放的资源信息
-class ReadReleaseResourceConfig : Singleton<ReadReleaseResourceConfig>
-{
-    //需要强制释放的资源
+// 读取需要强制释放的资源信息
+class ReadReleaseResourceConfig : Singleton<ReadReleaseResourceConfig> {
+    // 需要强制释放的资源
     private Dictionary<string, List<string>> mResList = new Dictionary<string, List<string>>();
-   
 
     XmlDocument xmlDoc = null;
-    public ReadReleaseResourceConfig()
-    {
-    }
+    public ReadReleaseResourceConfig() {}
 
-    //需要强制释放的资源
-    public void Init()
-    {
-        LoadConfig("Config/ReleaseResource");
-    }
+    // 需要强制释放的资源
+    public void Init() { LoadConfig("Config/ReleaseResource"); }
 
-
-    //强制释放资源aaset
-    public void ForceReleaseResource()
-    {
-        //残留的贴图资源
+    // 强制释放资源aaset
+    public void ForceReleaseResource() {
+        // 残留的贴图资源
         Texture[] textures = Resources.FindObjectsOfTypeAll<Texture>();
         if (textures.Length == 0)
             return;
 
-        foreach (KeyValuePair<string, List<string>> typeList in mResList)
-        {
+        foreach (KeyValuePair<string, List<string>> typeList in mResList) {
             string type = typeList.Key;
-            if (type == "texture")
-            {
+            if (type == "texture") {
                 List<string> texList = typeList.Value;
-                foreach (Texture texture in textures)
-                {
+                foreach (Texture texture in textures) {
                     string textureName = texture.name;
 
-                    //匹配需要强制删除的贴图资源
-                    if (texList.Contains(textureName))
-                    {
+                    // 匹配需要强制删除的贴图资源
+                    if (texList.Contains(textureName)) {
                         Resources.UnloadAsset(texture);
-                        //Debug.Log("unload texture asset" + textureName);
+                        // Debug.Log("unload texture asset" + textureName);
                     }
-                }            
+                }
             }
-        }        
+        }
     }
 
-
-
-    private void LoadConfig(string xmlFilePath)
-    {
+    private void LoadConfig(string xmlFilePath) {
         mResList.Clear();
-
 
         ResourceUnit xmlfileUnit = ResourcesManager.Instance.loadImmediate(xmlFilePath, ResourceType.ASSET);
         TextAsset xmlfile = xmlfileUnit.Asset as TextAsset;
@@ -67,19 +50,16 @@ class ReadReleaseResourceConfig : Singleton<ReadReleaseResourceConfig>
         xmlDoc.LoadXml(xmlfile.text);
 
         XmlNode resources = xmlDoc.SelectSingleNode("ResourceList");
-        if (resources != null)
-        {
+        if (resources != null) {
             XmlNodeList resourceTypeList = resources.ChildNodes;
-            //遍历所有类型资源
-            foreach (XmlNode resourceType in resourceTypeList)
-            {
+            // 遍历所有类型资源
+            foreach (XmlNode resourceType in resourceTypeList) {
                 string typeName = resourceType.Attributes["type"].Value;
 
                 List<string> sList = new List<string>();
 
-                //遍历所有资源
-                foreach (XmlNode res in resourceType)
-                {
+                // 遍历所有资源
+                foreach (XmlNode res in resourceType) {
                     string resName = res.Attributes["name"].Value;
 
                     sList.Add(resName);
@@ -91,7 +71,5 @@ class ReadReleaseResourceConfig : Singleton<ReadReleaseResourceConfig>
 
         int s = 0;
         s++;
-        
     }
 };
-

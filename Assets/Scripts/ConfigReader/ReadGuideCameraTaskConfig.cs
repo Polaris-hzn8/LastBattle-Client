@@ -7,41 +7,35 @@ using GameDefine;
 using System.Linq;
 using BlGame.Resource;
 
-public class ReadGuideCameraTaskConfig
-{
+public class ReadGuideCameraTaskConfig {
+    XmlDocument xmlDoc = null;
 
-	XmlDocument xmlDoc = null;
-
-    public ReadGuideCameraTaskConfig(string xmlFilePath)
-	{
-		//TextAsset xmlfile = Resources.Load(xmlFilePath) as TextAsset;
+    public ReadGuideCameraTaskConfig(string xmlFilePath) {
+        // TextAsset xmlfile = Resources.Load(xmlFilePath) as TextAsset;
         ResourceUnit xmlfileUnit = ResourcesManager.Instance.loadImmediate(xmlFilePath, ResourceType.ASSET);
         TextAsset xmlfile = xmlfileUnit.Asset as TextAsset;
 
+        if (!xmlfile) {
+            Debug.LogError(" error infos: 没有找到指定的xml文件：" + xmlFilePath);
+        }
 
-		if(!xmlfile)
-		{
-			Debug.LogError(" error infos: 没有找到指定的xml文件："+xmlFilePath);
-		}		
+        xmlDoc = new XmlDocument();
+        xmlDoc.LoadXml(xmlfile.text);
 
-		xmlDoc = new XmlDocument();
-		xmlDoc.LoadXml(xmlfile.text);
-		 
-		XmlNodeList infoNodeList = xmlDoc.SelectSingleNode("Vidicon").ChildNodes;
-		
-		for(int i = 0;i < infoNodeList.Count;i++)//(XmlNode xNode in infoNodeList)
-		{
-			if((infoNodeList[i] as XmlElement).GetAttributeNode("id") == null)	continue;
-			
-			string typeName = (infoNodeList[i] as XmlElement).GetAttributeNode("id").InnerText;
+        XmlNodeList infoNodeList = xmlDoc.SelectSingleNode("Vidicon").ChildNodes;
+
+        for (int i = 0; i < infoNodeList.Count; i++)  //(XmlNode xNode in infoNodeList)
+        {
+            if ((infoNodeList[i] as XmlElement).GetAttributeNode("id") == null)
+                continue;
+
+            string typeName = (infoNodeList[i] as XmlElement).GetAttributeNode("id").InnerText;
 
             CameraMoveInfo info = new CameraMoveInfo();
             info.mTaskId = Convert.ToInt32(typeName);
-			foreach(XmlElement xEle in infoNodeList[i].ChildNodes)
-			{				
-				#region 搜索
-                switch (xEle.Name)
-                {
+            foreach (XmlElement xEle in infoNodeList[i].ChildNodes) {
+#region 搜索
+                switch (xEle.Name) {
                     case "begin":
                         info.mStartPos = GameMethod.ResolveToVector3AsServer(xEle.InnerText);
                         break;
@@ -61,15 +55,14 @@ public class ReadGuideCameraTaskConfig
                         info.mGoon = Convert.ToInt32(xEle.InnerText);
                         break;
                 }
-				#endregion
-			}
+#endregion
+            }
             ConfigReader.guideCameraMoveXmlInfoDict.Add(info.mTaskId, info);
-		}
-	}
+        }
+    }
 }
 
-public class CameraMoveInfo
-{
+public class CameraMoveInfo {
     public int mTaskId;
     public Vector3 mStartPos;
     public Vector3 mEndPos;
@@ -77,6 +70,4 @@ public class CameraMoveInfo
     public float mDurTime;
     public float mNextTime;
     public int mGoon;
-
 }
- 

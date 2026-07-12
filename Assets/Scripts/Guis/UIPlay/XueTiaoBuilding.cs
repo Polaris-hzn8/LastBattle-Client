@@ -1,37 +1,29 @@
 using UnityEngine;
 using System;
 using System.Collections;
-using System.Collections.Generic; 
+using System.Collections.Generic;
 using BlGame.GameEntity;
 
-public class XueTiaoBuilding : XueTiaoUI 
-{		 
-    void Awake()
-    {
+public class XueTiaoBuilding : XueTiaoUI {
+    void Awake() {
         hpSprite = transform.Find("Control_Hp/Foreground").GetComponent<UISprite>();
         Transform time = transform.Find("Time");
-        if (time != null)
-        {
+        if (time != null) {
             TimeSlider = time.GetComponent<UISlider>();
         }
     }
 
     private UISlider TimeSlider;
 
-    protected override void Update()
-    {
+    protected override void Update() {
         base.Update();
-        if (TimeSlider == null)
-        {
+        if (TimeSlider == null) {
             return;
         }
-        if (xueTiaoOwner.EntityOverplusTotalTime > 0)
-        {
+        if (xueTiaoOwner.EntityOverplusTotalTime > 0) {
             xueTiaoOwner.EntityOverplusRemainTime -= Time.deltaTime;
-            if (xueTiaoOwner.EntityOverplusRemainTime < 0)
-            {
+            if (xueTiaoOwner.EntityOverplusRemainTime < 0) {
                 xueTiaoOwner.EntityOverplusRemainTime = 0;
-                
             }
             TimeSlider.value = xueTiaoOwner.EntityOverplusRemainTime / xueTiaoOwner.EntityOverplusTotalTime;
         }

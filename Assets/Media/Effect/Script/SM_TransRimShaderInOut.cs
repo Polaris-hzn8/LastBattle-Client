@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NewBehaviourScript : MonoBehaviour 
-{
+public class NewBehaviourScript : MonoBehaviour {
     public float str = 1.0f;
     public float fadeIn = 1.0f;
     public float stay = 1.0f;
@@ -10,33 +9,26 @@ public class NewBehaviourScript : MonoBehaviour
     private float timeGoes = 0.0f;
     private float currStr = 0.0f;
 
-	// Use this for initialization
-	void Start () 
-    {
-        GetComponent<Renderer>().material.SetFloat("_AllPower", currStr);	
-	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
+    // Use this for initialization
+    void Start() { GetComponent<Renderer>().material.SetFloat("_AllPower", currStr); }
+
+    // Update is called once per frame
+    void Update() {
         timeGoes += Time.deltaTime;
 
-        if (timeGoes < fadeIn)
-        {
+        if (timeGoes < fadeIn) {
             currStr = timeGoes * str * (1 / fadeIn);
         }
 
-        if ((timeGoes > fadeIn) && (timeGoes < fadeIn + stay))
-        {
+        if ((timeGoes > fadeIn) && (timeGoes < fadeIn + stay)) {
             currStr = str;
         }
 
-        if (timeGoes > fadeIn + stay)
-        {
+        if (timeGoes > fadeIn + stay) {
             currStr = str - ((timeGoes - (fadeIn + stay)) * (1 / fadeOut));
         }
 
-        //currStr=startStr-timeGoes;
-        GetComponent<Renderer>().material.SetFloat("_AllPower", currStr);	
-	}
+        // currStr=startStr-timeGoes;
+        GetComponent<Renderer>().material.SetFloat("_AllPower", currStr);
+    }
 }

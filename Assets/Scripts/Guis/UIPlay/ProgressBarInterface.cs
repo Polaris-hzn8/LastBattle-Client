@@ -8,40 +8,29 @@ using BlGame.GameEntity;
 using BlGame.Effect;
 using BlGame.Resource;
 
-class ProgressBarInterface : MonoBehaviour
-{
+class ProgressBarInterface : MonoBehaviour {
     public static ProgressBarInterface Instance = null;
-    void Awake()
-    {
-        Instance = this;
-    }
-    void Update()
-    {
-        if (isStart == false)
-        {
+    void Awake() { Instance = this; }
+    void Update() {
+        if (isStart == false) {
             return;
         }
-        //Debug.Log("DeltaTime" + Time.deltaTime);
-        //Debug.Log("timeCounter:" + timeCounter);
+        // Debug.Log("DeltaTime" + Time.deltaTime);
+        // Debug.Log("timeCounter:" + timeCounter);
         setProgress(timeCounter / time);
-        
+
         timeCounter += Time.deltaTime;
-      
-        if (timeCounter > time)
-        {
+
+        if (timeCounter > time) {
             timeCounter = time;
             isStart = false;
-            if (barType == BarType.BarSkill)
-            {
+            if (barType == BarType.BarSkill) {
                 hideProgressBar();
-                if (effectBacktoCity != null)
-                {
-                    if (effectBacktoCity.obj != null)
-                    {
+                if (effectBacktoCity != null) {
+                    if (effectBacktoCity.obj != null) {
                         GameObject.DestroyImmediate(effectBacktoCity.obj);
-                        if (audioCity != null && audioCity.clip != null && audioCity.isPlaying)
-                        {
-                            //Debug.Log("audioCity stop");
+                        if (audioCity != null && audioCity.clip != null && audioCity.isPlaying) {
+                            // Debug.Log("audioCity stop");
                             audioCity.Stop();
                         }
                     }
@@ -58,12 +47,10 @@ class ProgressBarInterface : MonoBehaviour
 
     private GameObject objEffect = null;
 
-    void OnEnable()
-    {
+    void OnEnable() {
         GameObject obj = transform.Find("Postion").transform.Find("Foreground").gameObject;
         objEffect = transform.Find("Postion").transform.Find("load_flash").gameObject;
-        if (obj != null)
-        {
+        if (obj != null) {
             progressBar = obj.GetComponent<UISprite>();
             progressBar.fillAmount = 0f;
         }
@@ -72,39 +59,33 @@ class ProgressBarInterface : MonoBehaviour
     }
 
     static GameObject rootNode = null;
-    public enum BarType
-    {
+    public enum BarType {
         BarAbsorb,
         BarSkill,
     }
 
     public static BarType barType;
     static IEffect effectBacktoCity = null;
-    public static void startProgressBar(float totalTime)
-    {
+    public static void startProgressBar(float totalTime) {
         barType = BarType.BarSkill;
         time = totalTime;
         ProgressBarInit();
-
     }
-    public static void startProgressBar(BarType bType,int skillID = 0 )
-    {
+    public static void startProgressBar(BarType bType, int skillID = 0) {
         Debug.Log("startProgressBar(BarType bType, int skillID)");
         barType = bType;
-        if (bType == BarType.BarAbsorb)
-        {
+        if (bType == BarType.BarAbsorb) {
             time = 3.0f;
         }
         ProgressBarInit();
     }
 
-    private static void ProgressBarInit()
-    {
-        if (rootNode == null)
-        {
-            ResourceUnit objUnit = ResourcesManager.Instance.loadImmediate("Guis/Play/OccupyProcessbar", ResourceType.PREFAB);
+    private static void ProgressBarInit() {
+        if (rootNode == null) {
+            ResourceUnit objUnit =
+                ResourcesManager.Instance.loadImmediate("Guis/Play/OccupyProcessbar", ResourceType.PREFAB);
             GameObject obj = objUnit.Asset as GameObject;
-            rootNode =  GameObject.Instantiate(obj) as GameObject; 
+            rootNode = GameObject.Instantiate(obj) as GameObject;
             rootNode.transform.parent = GameMethod.GetUiCamera.transform;
             rootNode.transform.localPosition = Vector3.zero;
             rootNode.transform.localScale = Vector3.one;
@@ -114,29 +95,25 @@ class ProgressBarInterface : MonoBehaviour
         timeCounter = 0;
     }
 
-    public static void hideProgressBar()
-    {
-        //Debug.Log("hideProgressBar");
-        if (rootNode != null)
-        {
+    public static void hideProgressBar() {
+        // Debug.Log("hideProgressBar");
+        if (rootNode != null) {
             rootNode.SetActive(false);
         }
     }
-    //progress 0~1
-    public void setProgress(float progress)
-    {
-        //Debug.Log("setProgress");
-        progressBar.fillAmount = progress; 
+    // progress 0~1
+    public void setProgress(float progress) {
+        // Debug.Log("setProgress");
+        progressBar.fillAmount = progress;
         SetEffectPos();
     }
 
     private float startX = 0f;
-    void SetEffectPos()
-    {
-        //Debug.Log("setEffectPos");
-        Vector3 pos = new Vector3(progressBar.fillAmount * progressBar.width + startX, progressBar.transform.localPosition.y, progressBar.transform.localPosition.z - 50);
+    void SetEffectPos() {
+        // Debug.Log("setEffectPos");
+        Vector3 pos = new Vector3(progressBar.fillAmount * progressBar.width + startX,
+                                  progressBar.transform.localPosition.y,
+                                  progressBar.transform.localPosition.z - 50);
         objEffect.transform.localPosition = pos;
     }
-
 }
-

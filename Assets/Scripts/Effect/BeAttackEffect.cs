@@ -18,46 +18,37 @@ using BlGame.GameData;
 using BlGame.GameEntity;
 using BlGame;
 
-//技能受击效果
-namespace BlGame.Effect
-{
-    public class BeAttackEffect : IEffect
-    {
-        public BeAttackEffect()
-        {
-            projectID = EffectManager.Instance.GetLocalId();
-            mType = IEffect.ESkillEffectType.eET_BeAttack;
-        }
+// 技能受击效果
+namespace BlGame.Effect {
+public class BeAttackEffect : IEffect {
+    public BeAttackEffect() {
+        projectID = EffectManager.Instance.GetLocalId();
+        mType = IEffect.ESkillEffectType.eET_BeAttack;
+    }
 
-        public override void Update()
-        {
-            if (isDead)
-                return;
+    public override void Update() {
+        if (isDead)
+            return;
 
-            base.Update();
-        }
+        base.Update();
+    }
 
-        public override void OnLoadComplete()
-        {
-            //判断enTarget
-            Ientity enTarget;
-            EntityManager.AllEntitys.TryGetValue(enTargetKey, out enTarget);
+    public override void OnLoadComplete() {
+        // 判断enTarget
+        Ientity enTarget;
+        EntityManager.AllEntitys.TryGetValue(enTargetKey, out enTarget);
 
-            if (enTarget != null && obj != null)
-            {
-                Transform hitpoit = enTarget.RealEntity.transform.Find("hitpoint");
-                if (hitpoit != null)
-                {
-                    GetTransform().parent = hitpoit;
-                    GetTransform().localPosition = new Vector3(0.0f, 0.0f, 0.0f);
-                }
-            }
-
-            if (skillID == 0)
-            {
-                return;
+        if (enTarget != null && obj != null) {
+            Transform hitpoit = enTarget.RealEntity.transform.Find("hitpoint");
+            if (hitpoit != null) {
+                GetTransform().parent = hitpoit;
+                GetTransform().localPosition = new Vector3(0.0f, 0.0f, 0.0f);
             }
         }
-    }	
+
+        if (skillID == 0) {
+            return;
+        }
+    }
 }
-
+}

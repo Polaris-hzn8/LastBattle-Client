@@ -10,126 +10,98 @@ using BlGame.Network;
 using System.Linq;
 using BlGame.Ctrl;
 
-namespace BlGame.View
-{
-    public class TimeDownWindow : BaseWindow
-    {
-        public TimeDownWindow()
-        {
-            mScenesType = EScenesType.EST_Play;
-            mResName = GameConstDefine.LoadTimeDownUI;
-            mResident = false;
+namespace BlGame.View {
+public class TimeDownWindow : BaseWindow {
+    public TimeDownWindow() {
+        mScenesType = EScenesType.EST_Play;
+        mResName = GameConstDefine.LoadTimeDownUI;
+        mResident = false;
 
-            mStart = false;
-        }
+        mStart = false;
+    }
 
-        ////////////////////////////继承接口/////////////////////////
-        //类对象初始化
-        public override void Init()
-        {
-            EventCenter.AddListener<long>(EGameEvent.eGameEvent_BattleTimeDownEnter, ShowTime);
-            EventCenter.AddListener<long>(EGameEvent.eGameEvent_GameStartTime,Stop);
-        }
+    ////////////////////////////继承接口/////////////////////////
+    // 类对象初始化
+    public override void Init() {
+        EventCenter.AddListener<long>(EGameEvent.eGameEvent_BattleTimeDownEnter, ShowTime);
+        EventCenter.AddListener<long>(EGameEvent.eGameEvent_GameStartTime, Stop);
+    }
 
-        //类对象释放
-        public override void Realse()
-        {
-            EventCenter.RemoveListener<long>(EGameEvent.eGameEvent_BattleTimeDownEnter, ShowTime);
-            EventCenter.RemoveListener<long>(EGameEvent.eGameEvent_GameStartTime, Stop);
-        }
+    // 类对象释放
+    public override void Realse() {
+        EventCenter.RemoveListener<long>(EGameEvent.eGameEvent_BattleTimeDownEnter, ShowTime);
+        EventCenter.RemoveListener<long>(EGameEvent.eGameEvent_GameStartTime, Stop);
+    }
 
-        //窗口控件初始化
-        protected override void InitWidget()
-        {
-            mMinute = mRoot.Find("Minute").GetComponent<UISprite>();
-            mSecond = mRoot.Find("Second").GetComponent<UISprite>();
-            mAnimation = mRoot.GetComponent<Animation>();
-        }
+    // 窗口控件初始化
+    protected override void InitWidget() {
+        mMinute = mRoot.Find("Minute").GetComponent<UISprite>();
+        mSecond = mRoot.Find("Second").GetComponent<UISprite>();
+        mAnimation = mRoot.GetComponent<Animation>();
+    }
 
+    // 窗口控件释放
+    protected override void RealseWidget() {}
 
-        //窗口控件释放
-        protected override void RealseWidget()
-        {
-        }
+    // 游戏事件注册
+    protected override void OnAddListener() {}
 
-        //游戏事件注册
-        protected override void OnAddListener()
-        {
+    // 游戏事件注消
+    protected override void OnRemoveListener() {}
 
-        }
+    // 显示
+    public override void OnEnable() { mStart = false; }
 
-        //游戏事件注消
-        protected override void OnRemoveListener()
-        {
+    // 隐藏
+    public override void OnDisable() {}
 
-        }
+    private void ShowTime(long time) {
+        if (time < 0)
+            return;
 
-        //显示
-        public override void OnEnable()
-        {
-            mStart = false;
-        }
+        Show();
 
-        //隐藏
-        public override void OnDisable()
-        {
-        }
+        mTime = time;
+        mDeltaTime = Time.time;
+        mStart = true;
 
-        private void ShowTime(long time)
-        {
-            if (time < 0)
-                return;
+        SetTime(mTime);
+    }
 
-            Show();
+    private void Stop(long time) { Hide(); }
 
-            mTime = time;
+    public override void Update(float deltaTime) {
+        if (!mStart)
+            return;
+
+        if (Time.time - mDeltaTime > 1f) {
+            mTime -= 1;
             mDeltaTime = Time.time;
-            mStart = true;
+
+            if (mTime <= 0) {
+                Hide();
+                return;
+            }
 
             SetTime(mTime);
         }
-
-        private void Stop(long time)
-        {
-            Hide();
-        }
-
-        public override void Update(float deltaTime)
-        {
-            if (!mStart)
-                return;
-
-            if (Time.time - mDeltaTime > 1f)
-            {
-                mTime -= 1;
-                mDeltaTime = Time.time;
-
-                if (mTime <= 0)
-                {
-                    Hide();
-                    return;
-                }
-
-                SetTime(mTime);
-            }
-        }
-
-        private void SetTime(long time)
-        {
-            long ten = time / 10;
-            long unit = time % 10;
-
-            mMinute.spriteName = ten.ToString();
-            mSecond.spriteName = unit.ToString();
-            mAnimation.Play(PlayMode.StopAll);
-        }
-
-        UISprite mMinute;
-        UISprite mSecond;
-        Animation mAnimation;
-        long mTime;
-        float mDeltaTime;
-        bool mStart;
     }
+
+    private void SetTime(long time) {
+        long ten = time / 10;
+        long unit = time % 10;
+
+        mMinute.spriteName = ten.ToString();
+        mSecond.spriteName = unit.ToString();
+        mAnimation.Play(PlayMode.StopAll);
+    }
+
+    UISprite mMinute;
+    UISprite mSecond;
+    Animation mAnimation;
+    long mTime;
+    float mDeltaTime;
+    bool mStart;
+}
 
 }

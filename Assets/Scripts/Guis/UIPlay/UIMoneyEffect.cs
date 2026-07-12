@@ -6,14 +6,11 @@ using BlGame.GameEntity;
 using System.Linq;
 using BlGame.Skill;
 
-public class UIMoneyEffect:MonoBehaviour
-{
-
+public class UIMoneyEffect : MonoBehaviour {
     Transform team1;
     Transform team2;
-    
 
-    public static UIMoneyEffect  Instance = null;
+    public static UIMoneyEffect Instance = null;
     public List<MoneyEffectClass> playerMoneyList = new List<MoneyEffectClass>();
 
     void Awake() {
@@ -22,19 +19,17 @@ public class UIMoneyEffect:MonoBehaviour
     }
 
     void Init() {
-
         team1 = transform.Find("TeamBackground/TeamPlateBlue");
         team2 = transform.Find("TeamBackground/TeamPlateRed");
 
         for (int i = 0; i < 6; i++) {
             Transform parent = team1;
-            int index = i+1;
-            if (index % 2 == 0)
-            {
+            int index = i + 1;
+            if (index % 2 == 0) {
                 parent = team2;
             }
             Transform goldParent = parent.Find("GoldPanel");
-            Transform labelParent = goldParent.Find("Gold"+index.ToString());
+            Transform labelParent = goldParent.Find("Gold" + index.ToString());
             Transform objIcon = labelParent.Find("Gold");
             MoneyEffectClass effect = new MoneyEffectClass();
             for (int j = 0; j < 6; j++) {
@@ -45,41 +40,36 @@ public class UIMoneyEffect:MonoBehaviour
                 effect.labelDownList.Add(labelDown);
             }
             effect.objIcon = objIcon;
-            playerMoneyList.Add(effect);            
-        }        
+            playerMoneyList.Add(effect);
+        }
     }
 
     void OnEnable() {
-        for (int i = 0; i < 6; i++)
-        {
+        for (int i = 0; i < 6; i++) {
             UIMoneyEffect.Instance.InitShowMoneyEffect(i, 0, 0);
             MoneyEffectClass effect = playerMoneyList.ElementAt(i);
             effect.objIcon.parent.gameObject.SetActive(false);
         }
     }
-    public void InitShowMoneyEffect(int camp, int moneySrc, int moneyDst)
-    {
-       // for (int i = 0; i < 6; i++)
-       // {
+    public void InitShowMoneyEffect(int camp, int moneySrc, int moneyDst) {
+        // for (int i = 0; i < 6; i++)
+        // {
         MoneyEffectClass effect = playerMoneyList.ElementAt(camp);
         effect.ShowInitMoney(moneySrc, moneyDst);
         effect.objIcon.parent.gameObject.SetActive(true);
-       // }
+        // }
     }
 
     public void BeginShowMoneyEffect(int camp) {
-      //  for (int i = 0; i < 6; i++)
-       // {
-            MoneyEffectClass effect = playerMoneyList.ElementAt(camp);
-            effect.StartMove();
-       // }
+        //  for (int i = 0; i < 6; i++)
+        // {
+        MoneyEffectClass effect = playerMoneyList.ElementAt(camp);
+        effect.StartMove();
+        // }
     }
-   
 }
 
-
-public class MoneyEffectClass
-{
+public class MoneyEffectClass {
     public List<UILabel> labelUpList = new List<UILabel>();
     public List<UILabel> labelDownList = new List<UILabel>();
     public Transform objIcon;
@@ -99,17 +89,14 @@ public class MoneyEffectClass
     UITweener tweenPos;
 
     public bool isMoveEnd = false;
-    public void ShowInitMoney(int moneySrc, int moneyDst)
-    {
+    public void ShowInitMoney(int moneySrc, int moneyDst) {
         srcNum = moneySrc;
         dstNum = moneyDst;
         srcList = DivideIntNumber(moneySrc);
         goalList = DivideIntNumber(moneyDst);
-        for (int i = 0; i < moneyBit; i++)
-        {
+        for (int i = 0; i < moneyBit; i++) {
             labelUpList.ElementAt(i).text = "0";
-            if (i >= srcList.Count)
-            {
+            if (i >= srcList.Count) {
                 continue;
             }
             int num = srcList.ElementAt(i);
@@ -119,65 +106,56 @@ public class MoneyEffectClass
         orignalY = moveHeight2 = labelUpList.ElementAt(0).transform.localPosition.y;
     }
 
-    public void StartMove()
-    {
-        if (dstNum == 0) return;
+    public void StartMove() {
+        if (dstNum == 0)
+            return;
         moveIndex = -1;
         SetCurrentMoveLabelList();
         isMoveEnd = false;
     }
 
-    void SetCurrentMoveLabelList()
-    {
-
+    void SetCurrentMoveLabelList() {
         moveIndex += 1;
         moveLabelList.Clear();
-        if (moveIndex >= goalList.Count)
-        {
+        if (moveIndex >= goalList.Count) {
             isMoveEnd = true;
             return;
         }
-        if (moveIndex >= srcList.Count){
+        if (moveIndex >= srcList.Count) {
             currentNum = 0;
-        }
-        else {
+        } else {
             currentNum = srcList.ElementAt(moveIndex);
         }
-        
+
         moveLabelList.Add(labelUpList.ElementAt(moveIndex));
         moveLabelList.Add(labelDownList.ElementAt(moveIndex));
         MoveAsignedBitMoney(moveLabelList);
     }
 
-    bool ReachAsignedBitGoalNum(int index)
-    {
+    bool ReachAsignedBitGoalNum(int index) {
         int num = goalList.ElementAt(index);
         if (num == currentNum)
             return true;
         return false;
     }
 
-
-    List<int> DivideIntNumber(int number)
-    {
+    List<int> DivideIntNumber(int number) {
         List<int> numList = new List<int>();
         int temp = number;
-        while (true)
-        {
+        while (true) {
             int num = temp % 10;
             numList.Add(num);
-            if (temp / 10 == 0) break;
+            if (temp / 10 == 0)
+                break;
             temp = temp / 10;
         }
         return numList;
     }
 
-    void MoveAsignedBitMoney(List<UILabel> moveList)
-    {
-        if (ReachAsignedBitGoalNum(moveIndex))
-        {
+    void MoveAsignedBitMoney(List<UILabel> moveList) {
+        if (ReachAsignedBitGoalNum(moveIndex)) {
             SetCurrentMoveLabelList();
-           
+
             return;
         }
         currentNum += 1;
@@ -186,17 +164,15 @@ public class MoneyEffectClass
         moveList.ElementAt(1).text = currentNum.ToString();
         tweenPos = TweenPosition.Begin(moveList.ElementAt(0).gameObject, moveDuring, new Vector3(0f, moveHeight1, 0f));
         tweenPos.method = UITweener.Method.Linear;
-        UITweener tween = TweenPosition.Begin(moveList.ElementAt(1).gameObject, moveDuring, new Vector3(0f, moveHeight2, 0f));
+        UITweener tween =
+            TweenPosition.Begin(moveList.ElementAt(1).gameObject, moveDuring, new Vector3(0f, moveHeight2, 0f));
         tween.method = UITweener.Method.Linear;
         EventDelegate.Add(tweenPos.onFinished, OnFinishOnce, true);
-
     }
 
-    void OnFinishOnce()
-    {
+    void OnFinishOnce() {
         EventDelegate.Remove(tweenPos.onFinished, OnFinishOnce);
-        if (ReachAsignedBitGoalNum(moveIndex))
-        {
+        if (ReachAsignedBitGoalNum(moveIndex)) {
             SetCurrentMoveLabelList();
             return;
         }
@@ -209,4 +185,3 @@ public class MoneyEffectClass
         MoveAsignedBitMoney(moveLabelList);
     }
 }
-

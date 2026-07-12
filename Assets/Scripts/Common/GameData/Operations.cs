@@ -11,17 +11,13 @@ using System.Collections.Generic;
 
 using JT.FWW.Tools;
 
-namespace JT
-{
-    namespace FWW
-    {
-        namespace Tools
-        {
-			public enum MsgGCToGSToCS
-			{
-				GAME_PING = 1025,
-				GAME_REGISTE = 1026,
-			}
-        }
-    }
+namespace JT {
+namespace FWW {
+namespace Tools {
+public enum MsgGCToGSToCS {
+    GAME_PING = 1025,
+    GAME_REGISTE = 1026,
+}
+}
+}
 }

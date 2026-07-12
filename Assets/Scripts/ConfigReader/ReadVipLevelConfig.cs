@@ -6,10 +6,9 @@ using GameDefine;
 using BlGame.Resource;
 using System.Linq;
 
-public class ReadVipLevelConfig  {
+public class ReadVipLevelConfig {
     XmlDocument xmlDoc = null;
-    public ReadVipLevelConfig(string xmlFilePath)
-    {
+    public ReadVipLevelConfig(string xmlFilePath) {
         ResourceUnit xmlfileUnit = ResourcesManager.Instance.loadImmediate(xmlFilePath, ResourceType.ASSET);
         TextAsset xmlfile = xmlfileUnit.Asset as TextAsset;
 
@@ -17,20 +16,20 @@ public class ReadVipLevelConfig  {
         xmlDoc.LoadXml(xmlfile.text);
 
         XmlNodeList infoNodeList = xmlDoc.SelectSingleNode("VIPIntegralCfg").ChildNodes;
-        string temp = null; string[] value = null;
-        for (int i = 0; i < infoNodeList.Count; i++)//XmlNode xNode in infoNodeList)
+        string temp = null;
+        string[] value = null;
+        for (int i = 0; i < infoNodeList.Count; i++)  // XmlNode xNode in infoNodeList)
         {
-            if ((infoNodeList[i] as XmlElement).GetAttributeNode("VIPLv") == null) continue;
+            if ((infoNodeList[i] as XmlElement).GetAttributeNode("VIPLv") == null)
+                continue;
 
             string level = (infoNodeList[i] as XmlElement).GetAttributeNode("VIPLv").InnerText;
 
             VipLevelConfigInfo levelInfo = new VipLevelConfigInfo();
             levelInfo.VipUserLevel = Convert.ToInt32(level);
-            foreach (XmlElement xEle in infoNodeList[i].ChildNodes)
-            {
-                #region 搜索
-                switch (xEle.Name)
-                {
+            foreach (XmlElement xEle in infoNodeList[i].ChildNodes) {
+#region 搜索
+                switch (xEle.Name) {
                     case "VIPIntegral":
                         levelInfo.VipIntegral = Convert.ToInt32(xEle.InnerText);
                         break;
@@ -72,15 +71,14 @@ public class ReadVipLevelConfig  {
                         break;
                 }
 
-                #endregion
+#endregion
             }
-            //Debug.LogError("levelInfo.UserLevel  " + levelInfo.UserLevel + " levelInfo " + levelInfo.LevelUpExp);
+            // Debug.LogError("levelInfo.UserLevel  " + levelInfo.UserLevel + " levelInfo " + levelInfo.LevelUpExp);
             ConfigReader.ViplevelXmlInfoDict.Add(levelInfo.VipUserLevel, levelInfo);
         }
     }
 }
-public class VipLevelConfigInfo : System.Object
-{
+public class VipLevelConfigInfo : System.Object {
     public int VipUserLevel;
     public int VipIntegral;
     public string VipHero;

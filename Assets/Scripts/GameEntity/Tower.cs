@@ -2,13 +2,11 @@
 using System.Collections;
 
 public class Tower : Entity {
-
-    public override void Start()
-    {
-        //base.Start();
+    public override void Start() {
+        // base.Start();
     }
 
-    //public void 
+    // public void
 
-    //public override 
+    // public override
 }

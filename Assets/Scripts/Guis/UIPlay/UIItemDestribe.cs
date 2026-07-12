@@ -7,29 +7,23 @@ using GameDefine;
 using JT.FWW.Tools;
 using BlGame.Resource;
 
-public class UIItemDestribe : MonoBehaviour
-{
-
+public class UIItemDestribe : MonoBehaviour {
     public static UIItemDestribe Instance;
 
-    public GameObject desObj
-    {
-        private set;
-        get;
-    }
+    public GameObject desObj { private set; get; }
 
     private UILabel ItemName = null;
     private UILabel ItemDes = null;
     private UILabel ItemCost = null;
 
-    void Awake()
-    {
+    void Awake() {
         Instance = this;
 
-        //desObj = GameObject.Instantiate(Resources.Load(GameDefine.GameConstDefine.ItemDestribe)) as GameObject;
-        ResourceUnit desObjUnit = ResourcesManager.Instance.loadImmediate(GameDefine.GameConstDefine.ItemDestribe, ResourceType.PREFAB);
+        // desObj = GameObject.Instantiate(Resources.Load(GameDefine.GameConstDefine.ItemDestribe)) as GameObject;
+        ResourceUnit desObjUnit =
+            ResourcesManager.Instance.loadImmediate(GameDefine.GameConstDefine.ItemDestribe, ResourceType.PREFAB);
         desObj = GameObject.Instantiate(desObjUnit.Asset) as GameObject;
-        
+
         desObj.transform.parent = transform;
         desObj.transform.localScale = Vector3.one;
         desObj.transform.localPosition = Vector3.zero;
@@ -41,16 +35,11 @@ public class UIItemDestribe : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
-    void OnEnable()
-    {
-    }
+    void OnEnable() {}
 
-    public void OpenItemDestribe(bool show, int id)
-    {
-        if (show)
-        {
-            if (ConfigReader.ItemXmlInfoDict.ContainsKey(id))
-            {
+    public void OpenItemDestribe(bool show, int id) {
+        if (show) {
+            if (ConfigReader.ItemXmlInfoDict.ContainsKey(id)) {
                 ItemConfigInfo item = ConfigReader.ItemXmlInfoDict[id];
                 ItemName.text = item.sNameCh;
                 ItemCost.text = item.n32CPCost.ToString();
@@ -58,11 +47,9 @@ public class UIItemDestribe : MonoBehaviour
 
                 this.gameObject.SetActive(true);
             }
-        }
-        else
-        {
-            this.gameObject.SetActive(false); ;
+        } else {
+            this.gameObject.SetActive(false);
+            ;
         }
     }
 }
-

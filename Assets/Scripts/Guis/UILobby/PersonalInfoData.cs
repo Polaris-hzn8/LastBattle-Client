@@ -3,17 +3,16 @@ using BlGame.GameData;
 using System.Collections;
 using BlGame.Model;
 
-public class PersonalInfoData 
-{
+public class PersonalInfoData {
     public static PersonalInfoData Instance() {
         if (instance == null) {
             instance = new PersonalInfoData();
         }
         return instance;
     }
-    PersonalInfoData() { }
+    PersonalInfoData() {}
 
-    private static PersonalInfoData instance =null;
+    private static PersonalInfoData instance = null;
     public string gameNick;
     public string gameCount;
     public string gameLevel;
@@ -27,11 +26,19 @@ public class PersonalInfoData
     public string gameMaxExp;
     public string gameHead;
     public string headId;
-    
-    public void SetCurrentDate(uint headID ,string pszNickName, int UserLv, int UserTotalExp, int UserCurLvExp,
-                              int TotalGameInns, int TotalWinInns, int HeroKills, int BuidingDemolishNum,
-                              int DeadTimes, int MaxAchNum, int AchNum)
-    {
+
+    public void SetCurrentDate(uint headID,
+                               string pszNickName,
+                               int UserLv,
+                               int UserTotalExp,
+                               int UserCurLvExp,
+                               int TotalGameInns,
+                               int TotalWinInns,
+                               int HeroKills,
+                               int BuidingDemolishNum,
+                               int DeadTimes,
+                               int MaxAchNum,
+                               int AchNum) {
         headId = headID.ToString();
         gameNick = pszNickName;
         gameCount = TotalGameInns.ToString();
@@ -44,13 +51,11 @@ public class PersonalInfoData
         gameHead = GameUserModel.Instance.GameUserHead.ToString();
         gameMaxAchieve = MaxAchNum.ToString();
         AchNum = 0;
-        if (AchNum <= 0)
-        {
+        if (AchNum <= 0) {
             gameAchieveCount = "N";
             gameMaxAchieve = "A";
         }
-        if (UserTotalExp <= 0)
-        {
+        if (UserTotalExp <= 0) {
             LevelConfigInfo info = ConfigReader.GetLevelInfo(UserLv);
             if (info == null)
                 return;
@@ -60,5 +65,4 @@ public class PersonalInfoData
         gameExp = UserCurLvExp.ToString();
         gameMaxExp = UserTotalExp.ToString();
     }
- 
 }

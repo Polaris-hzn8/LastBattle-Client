@@ -8,20 +8,15 @@ using System.Linq;
 using BlGame.GuideDate;
 using GameDefine;
 
-public class ReadGuideTaskConfig
-{
-
+public class ReadGuideTaskConfig {
     XmlDocument xmlDoc = null;
 
-    public ReadGuideTaskConfig(string xmlFilePath)
-    {
-
-        //TextAsset xmlfile = Resources.Load(xmlFilePath) as TextAsset;
+    public ReadGuideTaskConfig(string xmlFilePath) {
+        // TextAsset xmlfile = Resources.Load(xmlFilePath) as TextAsset;
         ResourceUnit xmlfileUnit = ResourcesManager.Instance.loadImmediate(xmlFilePath, ResourceType.ASSET);
         TextAsset xmlfile = xmlfileUnit.Asset as TextAsset;
 
-        if (!xmlfile)
-        {
+        if (!xmlfile) {
             Debug.LogError(" error infos: 没有找到指定的xml文件：" + xmlFilePath);
         }
 
@@ -30,18 +25,17 @@ public class ReadGuideTaskConfig
 
         XmlNodeList infoNodeList = xmlDoc.SelectSingleNode("Trigger").ChildNodes;
 
-        for (int i = 0; i < infoNodeList.Count; i++)//XmlNode xNode in infoNodeList)
+        for (int i = 0; i < infoNodeList.Count; i++)  // XmlNode xNode in infoNodeList)
         {
-            if ((infoNodeList[i] as XmlElement).GetAttributeNode("TaskID") == null) continue;
+            if ((infoNodeList[i] as XmlElement).GetAttributeNode("TaskID") == null)
+                continue;
             string typeName = (infoNodeList[i] as XmlElement).GetAttributeNode("TaskID").InnerText;
 
             GuideTaskInfo guideInfo = new GuideTaskInfo();
             guideInfo.TaskId = Convert.ToInt32(typeName);
-            foreach (XmlElement xEle in infoNodeList[i].ChildNodes)
-            {
-                #region 搜索
-                switch (xEle.Name)
-                {
+            foreach (XmlElement xEle in infoNodeList[i].ChildNodes) {
+#region 搜索
+                switch (xEle.Name) {
                     case "TaskId":
                         guideInfo.TaskId = Convert.ToInt32(xEle.InnerText);
                         break;
@@ -83,19 +77,17 @@ public class ReadGuideTaskConfig
                         break;
                 }
 
-                #endregion
+#endregion
             }
             ConfigReader.guideTaskXmlInfoDict.Add(guideInfo.TaskId, guideInfo);
         }
     }
 
-    //public st
+    // public st
 }
 
-
-public class GuideTaskInfo : System.Object
-{
-    #region 英雄头像信息
+public class GuideTaskInfo : System.Object {
+#region 英雄头像信息
     public int TaskId;
     public string Text;
     public string PrefabName;
@@ -109,5 +101,5 @@ public class GuideTaskInfo : System.Object
     public int mTaskTimes;
     public Vector3 mPos;
     public string GuideEffect;
-    #endregion
+#endregion
 }

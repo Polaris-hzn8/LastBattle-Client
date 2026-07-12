@@ -7,8 +7,7 @@ using JT.FWW.GameData;
 using BlGame;
 using BlGame.Network;
 using BlGame.GameState;
-public class UIGameSetting : MonoBehaviour
-{
+public class UIGameSetting : MonoBehaviour {
     private ButtonOnPress btnSoundEffect;
     private ButtonOnPress btnVoice;
     private ButtonOnPress btnChange;
@@ -20,8 +19,7 @@ public class UIGameSetting : MonoBehaviour
     public const string soundKey = "SoundKey";
     public const string voiceKey = "VoiceKey";
 
-    void Awake()
-    {
+    void Awake() {
         btnChange = transform.Find("ChangeAccount").GetComponent<ButtonOnPress>();
         btnVoice = transform.Find("MusicSwitch").GetComponent<ButtonOnPress>();
         btnSoundEffect = transform.Find("SoundSwitch").GetComponent<ButtonOnPress>();
@@ -31,8 +29,7 @@ public class UIGameSetting : MonoBehaviour
         ojbSound[1] = btnSoundEffect.transform.Find("Off").gameObject;
     }
 
-    void OnEnable()
-    {
+    void OnEnable() {
         SetSave(ref sOpenState, soundKey);
         SetSave(ref vOpenState, voiceKey);
         SetVoiceEnable(vOpenState);
@@ -42,11 +39,9 @@ public class UIGameSetting : MonoBehaviour
         btnChange.AddListener(OnChangeAccount);
     }
 
-    void OnDisable()
-    {
+    void OnDisable() {
         btnVoice.RemoveListener(OnVoiceChange);
         btnSoundEffect.RemoveListener(OnSoundChange);
-
     }
 
     void OnChangeAccount(int ie, bool isPress) {
@@ -66,8 +61,7 @@ public class UIGameSetting : MonoBehaviour
     }
 
     void OnSoundChange(int ie, bool isPress) {
-        if (isPress)
-        {
+        if (isPress) {
             return;
         }
         sOpenState = !sOpenState;
@@ -76,30 +70,25 @@ public class UIGameSetting : MonoBehaviour
         SetSoundEnable(sOpenState);
     }
 
-    void SetSave(ref bool saveState,string key) {
+    void SetSave(ref bool saveState, string key) {
         saveState = true;
-        if (PlayerPrefs.HasKey(key))
-        {
+        if (PlayerPrefs.HasKey(key)) {
             int state = PlayerPrefs.GetInt(key);
             saveState = (state == 1) ? true : false;
-        }
-        else
-        {
+        } else {
             int state = saveState ? 1 : 0;
             PlayerPrefs.SetInt(key, state);
         }
     }
 
-    void SetVoiceEnable(bool show)
-    {
+    void SetVoiceEnable(bool show) {
         int index = show ? 0 : 1;
         objVoice[index].SetActive(true);
         objVoice[1 - index].SetActive(false);
         AudioManager.Instance.EnableVoice(show);
     }
 
-    void SetSoundEnable(bool show)
-    {
+    void SetSoundEnable(bool show) {
         int index = show ? 0 : 1;
         ojbSound[index].SetActive(true);
         ojbSound[1 - index].SetActive(false);

@@ -4,30 +4,25 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 public class UIPersonal : MonoBehaviour {
+    public static UIPersonal Instance { private set; get; }
 
-    public static UIPersonal Instance
-    {
-        private set;
-        get;
-    }
+    UILabel GameInnsLabel;        // 游戏总局数
+    UILabel WinInnsLabel;         // 游戏胜利局数
+    UILabel KillNumLabel;         // 杀人总数
+    UILabel BuildingDemoliLabel;  // 破坏建筑数
+    UILabel DeadNumLabel;         // 死亡次数
+    UILabel AchievNumLabel;       // 成就完成数
+    UILabel LevelLabel;           // 等级
 
-	UILabel GameInnsLabel;//游戏总局数
-	UILabel WinInnsLabel;//游戏胜利局数
-	UILabel KillNumLabel;//杀人总数
-	UILabel BuildingDemoliLabel;//破坏建筑数
-	UILabel DeadNumLabel;//死亡次数
-	UILabel AchievNumLabel;//成就完成数
-	UILabel LevelLabel;//等级
+    UISlider ExpSlier;
+    UISprite BarSprite;
+    UILabel ExpLabel;  // 经验
 
-	UISlider ExpSlier;
-	UISprite BarSprite;
-	UILabel ExpLabel;//经验
+    UISprite HeadIcon;
+    UILabel VipLabel;
+    UILabel NameLabel;
 
-	UISprite HeadIcon;
-	UILabel VipLabel;
-	UILabel NameLabel; 
-
-    enum ShowState { 
+    enum ShowState {
         NullState,
         InitState,
         HeadInState,
@@ -49,8 +44,7 @@ public class UIPersonal : MonoBehaviour {
 
     List<Transform> infoList = new List<Transform>();
 
-    public void SetCurrentDate()
-    {
+    public void SetCurrentDate() {
         NameLabel.text = PersonalInfoData.Instance().gameNick;
         GameInnsLabel.text = PersonalInfoData.Instance().gameCount;
         LevelLabel.text = PersonalInfoData.Instance().gameLevel;
@@ -58,7 +52,8 @@ public class UIPersonal : MonoBehaviour {
         KillNumLabel.text = PersonalInfoData.Instance().gameKillCount;
         BuildingDemoliLabel.text = PersonalInfoData.Instance().gameBuildingDestroyCount;
         DeadNumLabel.text = PersonalInfoData.Instance().gameDeadCount;
-        AchievNumLabel.text = PersonalInfoData.Instance().gameAchieveCount + "/" + PersonalInfoData.Instance().gameMaxAchieve;
+        AchievNumLabel.text =
+            PersonalInfoData.Instance().gameAchieveCount + "/" + PersonalInfoData.Instance().gameMaxAchieve;
         int Exp = Convert.ToInt32(PersonalInfoData.Instance().gameExp);
         int MaxExp = Convert.ToInt32(PersonalInfoData.Instance().gameMaxExp);
         float val = (float)Exp / (float)MaxExp;
@@ -67,8 +62,8 @@ public class UIPersonal : MonoBehaviour {
         HeadIcon.spriteName = PersonalInfoData.Instance().headId.ToString();
     }
 
-	void Init(){
-		GameInnsLabel = transform.Find("Items/Item1/Number").GetComponent<UILabel>();
+    void Init() {
+        GameInnsLabel = transform.Find("Items/Item1/Number").GetComponent<UILabel>();
         WinInnsLabel = transform.Find("Items/Item2/Number").GetComponent<UILabel>();
         KillNumLabel = transform.Find("Items/Item3/Number").GetComponent<UILabel>();
         BuildingDemoliLabel = transform.Find("Items/Item4/Number").GetComponent<UILabel>();
@@ -76,33 +71,29 @@ public class UIPersonal : MonoBehaviour {
         AchievNumLabel = transform.Find("Items/Item6/Number").GetComponent<UILabel>();
         LevelLabel = transform.Find("player/Level/Number").GetComponent<UILabel>();
         ExpSlier = transform.Find("player/EXP").GetComponent<UISlider>();
-		ExpLabel = ExpSlier.transform.Find("Number").GetComponent<UILabel>();
-		BarSprite = ExpSlier.transform.Find("Bar").GetComponent<UISprite>();
+        ExpLabel = ExpSlier.transform.Find("Number").GetComponent<UILabel>();
+        BarSprite = ExpSlier.transform.Find("Bar").GetComponent<UISprite>();
         HeadIcon = transform.Find("player/HeadPhoto/Portrait").GetComponent<UISprite>();
         VipLabel = transform.Find("player/VIP/TimeRemaining").GetComponent<UILabel>();
         NameLabel = transform.Find("player/Name/NickName").GetComponent<UILabel>();
         Transform itemParent = transform.Find("Items");
         for (int i = 0; i < itemParent.childCount; i++) {
-            Transform add = itemParent.Find("Item"+(i+1).ToString());
+            Transform add = itemParent.Find("Item" + (i + 1).ToString());
             infoList.Add(add);
         }
-	}
-
-    void Awake() {
-        Init();
     }
 
+    void Awake() { Init(); }
 
     void OnEnable() {
         Instance = this;
-      
+
         DoInfoInInit();
-        //TweenPosition.Begin(gameObject, 0.5f, new Vector3(-46, 0, 0));
+        // TweenPosition.Begin(gameObject, 0.5f, new Vector3(-46, 0, 0));
         SetShowState(ShowState.HeadInState);
         EventCenter.AddListener(EGameEvent.eGameEvent_PersonInitInfo, SetCurrentDate);
     }
-    void OnDisable()
-    {
+    void OnDisable() {
         Instance = null;
         EventCenter.RemoveListener(EGameEvent.eGameEvent_PersonInitInfo, SetCurrentDate);
     }
@@ -112,12 +103,11 @@ public class UIPersonal : MonoBehaviour {
             return;
         }
         showState = state;
-        switch (showState)
-        {
+        switch (showState) {
             case ShowState.InitState:
-                
+
                 break;
-            case ShowState.HeadInState: 
+            case ShowState.HeadInState:
                 DoHeadIn();
                 break;
             case ShowState.InfoInState:
@@ -126,39 +116,42 @@ public class UIPersonal : MonoBehaviour {
         }
     }
 
-    void DoHeadIn() { 
+    void DoHeadIn() {
         GameObject obj = transform.Find("player").gameObject;
-        TweenPosition.Begin(obj,0f,new Vector3(-xMove,0f,0f));
+        TweenPosition.Begin(obj, 0f, new Vector3(-xMove, 0f, 0f));
         tweenHeadIn = TweenPosition.Begin(obj, moveDuring, new Vector3(xMove, 0f, 0f));
         tweenHeadIn.method = UITweener.Method.EaseIn;
         tweenHeadIn.style = UITweener.Style.Once;
-        EventDelegate.Add(tweenHeadIn.onFinished, OnFinishHeadIn);        
+        EventDelegate.Add(tweenHeadIn.onFinished, OnFinishHeadIn);
     }
-
 
     void OnFinishHeadIn() {
         SetShowState(ShowState.InfoInState);
         EventDelegate.Remove(tweenHeadIn.onFinished, OnFinishHeadIn);
     }
 
-    void DoInfoInInit()
-    {
-        for (int i = 0; i < infoList.Count; i++)
-        {
-            UITweener tween = TweenPosition.Begin(infoList[i].gameObject, 0f, new Vector3(-infoMoveX, infoList[i].transform.localPosition.y, infoList[i].transform.localPosition.z));
+    void DoInfoInInit() {
+        for (int i = 0; i < infoList.Count; i++) {
+            UITweener tween = TweenPosition.Begin(
+                infoList[i].gameObject,
+                0f,
+                new Vector3(-infoMoveX, infoList[i].transform.localPosition.y, infoList[i].transform.localPosition.z));
         }
     }
 
     void DoInfoIn() {
         for (int i = 0; i < infoList.Count; i++) {
-            UITweener tween = TweenPosition.Begin(infoList[i].gameObject, infoDuring, new Vector3(infoMoveInX, infoList[i].transform.localPosition.y, infoList[i].transform.localPosition.z));
+            UITweener tween = TweenPosition.Begin(
+                infoList[i].gameObject,
+                infoDuring,
+                new Vector3(infoMoveInX, infoList[i].transform.localPosition.y, infoList[i].transform.localPosition.z));
             tween.method = UITweener.Method.Linear;
             tween.style = UITweener.Style.Once;
             infoDelay = infoDelay + infoIncreaset;
             tween.delay = infoDelay;
             if (i == 9) {
                 tweenInfoIn = tween;
-                EventDelegate.Add(tweenInfoIn.onFinished, OnFinishInfoIn);        
+                EventDelegate.Add(tweenInfoIn.onFinished, OnFinishInfoIn);
             }
         }
     }

@@ -4,20 +4,15 @@ using System.Xml;
 using System.Collections.Generic;
 using BlGame.Resource;
 
-public class ReadNpcConfig
-{
-
+public class ReadNpcConfig {
     XmlDocument xmlDoc = null;
 
-    public ReadNpcConfig(string xmlFilePath)
-    {
-
-        //TextAsset xmlfile = Resources.Load(xmlFilePath) as TextAsset;
+    public ReadNpcConfig(string xmlFilePath) {
+        // TextAsset xmlfile = Resources.Load(xmlFilePath) as TextAsset;
         ResourceUnit xmlfileUnit = ResourcesManager.Instance.loadImmediate(xmlFilePath, ResourceType.ASSET);
         TextAsset xmlfile = xmlfileUnit.Asset as TextAsset;
 
-        if (!xmlfile)
-        {
+        if (!xmlfile) {
             Debug.LogError(" error infos: 没有找到指定的xml文件：" + xmlFilePath);
         }
 
@@ -26,19 +21,18 @@ public class ReadNpcConfig
 
         XmlNodeList infoNodeList = xmlDoc.SelectSingleNode("NPCCfg ").ChildNodes;
 
-        for (int i = 0; i < infoNodeList.Count; i++)//(XmlNode xNode in infoNodeList)
+        for (int i = 0; i < infoNodeList.Count; i++)  //(XmlNode xNode in infoNodeList)
         {
-            if ((infoNodeList[i] as XmlElement).GetAttributeNode("un32ID") == null) continue;
+            if ((infoNodeList[i] as XmlElement).GetAttributeNode("un32ID") == null)
+                continue;
 
             string typeName = (infoNodeList[i] as XmlElement).GetAttributeNode("un32ID").InnerText;
 
             NpcConfigInfo NpcSelectInfo = new NpcConfigInfo();
             NpcSelectInfo.NpcId = Convert.ToInt32(typeName);
-            foreach (XmlElement xEle in infoNodeList[i].ChildNodes)
-            {
-                #region 搜索
-                switch (xEle.Name)
-                {
+            foreach (XmlElement xEle in infoNodeList[i].ChildNodes) {
+#region 搜索
+                switch (xEle.Name) {
                     case "szNOStr":
                         NpcSelectInfo.NpcName = Convert.ToString(xEle.InnerText);
                         break;
@@ -176,16 +170,15 @@ public class ReadNpcConfig
                         break;
                 }
 
-                #endregion
+#endregion
             }
             ConfigReader.npcXmlInfoDict.Add(NpcSelectInfo.NpcId, NpcSelectInfo);
         }
     }
 }
 
-public class NpcConfigInfo : System.Object
-{
-    #region NPC信息
+public class NpcConfigInfo : System.Object {
+#region NPC信息
     public string NpcName;
     public int NpcId;
     public int NpcType;
@@ -232,6 +225,5 @@ public class NpcConfigInfo : System.Object
     public string un32Script1;
     public int NpcAttackSpeed;
     public bool CanLock;
-    #endregion
-
+#endregion
 }

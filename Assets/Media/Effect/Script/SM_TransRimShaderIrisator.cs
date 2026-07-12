@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SM_TransRimShaderIrisator : MonoBehaviour 
-{
+public class SM_TransRimShaderIrisator : MonoBehaviour {
     public float topStr = 2.0f;
     public float botStr = 1.0f;
     public float minSpeed = 1.0f;
@@ -11,37 +10,34 @@ public class SM_TransRimShaderIrisator : MonoBehaviour
     private float timeGoes;
     private bool timeGoesUp = true;
 
-    void RandomizeSpeed()
-    {
-        speed = Random.Range(minSpeed, maxSpeed);
-    }
-	// Use this for initialization
-	void Start () {
+    void RandomizeSpeed() { speed = Random.Range(minSpeed, maxSpeed); }
+    // Use this for initialization
+    void Start() {
         timeGoes = botStr;
         speed = Random.Range(minSpeed, maxSpeed);
-	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-        if (timeGoes > topStr)
-        {
+    }
+
+    // Update is called once per frame
+    void Update() {
+        if (timeGoes > topStr) {
             timeGoesUp = false;
             RandomizeSpeed();
         }
 
-        if (timeGoes < botStr)
-        {
+        if (timeGoes < botStr) {
             timeGoesUp = true;
             RandomizeSpeed();
         }
 
-
-        if (timeGoesUp) { timeGoes += Time.deltaTime * speed; }
-        if (!timeGoesUp) { timeGoes -= Time.deltaTime * speed; }
+        if (timeGoesUp) {
+            timeGoes += Time.deltaTime * speed;
+        }
+        if (!timeGoesUp) {
+            timeGoes -= Time.deltaTime * speed;
+        }
 
         var currStr = timeGoes;
 
-        GetComponent<Renderer>().material.SetFloat("_AllPower", currStr);	
-	}
+        GetComponent<Renderer>().material.SetFloat("_AllPower", currStr);
+    }
 }

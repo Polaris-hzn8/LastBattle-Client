@@ -7,20 +7,15 @@ using GameDefine;
 using System.Linq;
 using BlGame.Resource;
 
-public class ReadIGuideTaskConfig
-{
-
+public class ReadIGuideTaskConfig {
     XmlDocument xmlDoc = null;
 
-    public ReadIGuideTaskConfig(string xmlFilePath)
-    {
-
-        //TextAsset xmlfile = Resources.Load(xmlFilePath) as TextAsset;
+    public ReadIGuideTaskConfig(string xmlFilePath) {
+        // TextAsset xmlfile = Resources.Load(xmlFilePath) as TextAsset;
         ResourceUnit xmlfileUnit = ResourcesManager.Instance.loadImmediate(xmlFilePath, ResourceType.ASSET);
         TextAsset xmlfile = xmlfileUnit.Asset as TextAsset;
 
-        if (!xmlfile)
-        {
+        if (!xmlfile) {
             Debug.LogError(" error infos: 没有找到指定的xml文件：" + xmlFilePath);
         }
 
@@ -29,19 +24,18 @@ public class ReadIGuideTaskConfig
 
         XmlNodeList infoNodeList = xmlDoc.SelectSingleNode("UiTaskEvent").ChildNodes;
 
-        for (int i = 0; i < infoNodeList.Count; i++)//(XmlNode xNode in infoNodeList)
+        for (int i = 0; i < infoNodeList.Count; i++)  //(XmlNode xNode in infoNodeList)
         {
-            if ((infoNodeList[i] as XmlElement).GetAttributeNode("id") == null) continue;
+            if ((infoNodeList[i] as XmlElement).GetAttributeNode("id") == null)
+                continue;
 
             string typeName = (infoNodeList[i] as XmlElement).GetAttributeNode("id").InnerText;
 
             IGuideData taskInfo = new IGuideData();
             taskInfo.TaskId = Convert.ToInt32(typeName);
-            foreach (XmlElement xEle in infoNodeList[i].ChildNodes)
-            {
-                #region 搜索
-                switch (xEle.Name)
-                {
+            foreach (XmlElement xEle in infoNodeList[i].ChildNodes) {
+#region 搜索
+                switch (xEle.Name) {
                     case "startEvent":
                         taskInfo.StartTaskEvent = Convert.ToInt32(xEle.InnerText);
                         break;
@@ -52,10 +46,10 @@ public class ReadIGuideTaskConfig
                         taskInfo.TextPath = Convert.ToString(xEle.InnerText);
                         break;
                     case "textpos":
-                        taskInfo.TextPos = GameMethod.ResolveToVector3(Convert.ToString(xEle.InnerText),';');
+                        taskInfo.TextPos = GameMethod.ResolveToVector3(Convert.ToString(xEle.InnerText), ';');
                         break;
                     case "content":
-                        taskInfo.TextContent = GameMethod.ResolveToStrList(Convert.ToString(xEle.InnerText),';');
+                        taskInfo.TextContent = GameMethod.ResolveToStrList(Convert.ToString(xEle.InnerText), ';');
                         break;
                     case "shakepath":
                         taskInfo.ShakePath = Convert.ToString(xEle.InnerText);
@@ -67,7 +61,7 @@ public class ReadIGuideTaskConfig
                         taskInfo.FlashPath = Convert.ToString(xEle.InnerText);
                         break;
                     case "flashpos":
-                        taskInfo.FlashPos = GameMethod.ResolveToVector3(Convert.ToString(xEle.InnerText), ';'); 
+                        taskInfo.FlashPos = GameMethod.ResolveToVector3(Convert.ToString(xEle.InnerText), ';');
                         break;
                     case "destpos":
                         taskInfo.FlashDstPos = GameMethod.ResolveToVector3(Convert.ToString(xEle.InnerText), ';');
@@ -76,16 +70,14 @@ public class ReadIGuideTaskConfig
                         taskInfo.IsMask = (Convert.ToInt32(xEle.InnerText) == 1) ? true : false;
                         break;
                 }
-                #endregion
+#endregion
             }
             ConfigReader.iGuideDatalXmlInfoDict.Add(taskInfo.TaskId, taskInfo);
         }
     }
-   
 }
 
-public class IGuideData
-{
+public class IGuideData {
     public int TaskId;
     public int StartTaskEvent;
     public int EndTaskEvent;
@@ -98,6 +90,4 @@ public class IGuideData
     public Vector3 FlashPos;
     public Vector3 FlashDstPos;
     public bool IsMask;
-
 }
- 

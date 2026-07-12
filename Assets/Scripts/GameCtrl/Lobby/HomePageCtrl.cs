@@ -11,24 +11,15 @@ using GameDefine;
 using System;
 using System.Collections.Generic;
 
-namespace BlGame.Ctrl
-{
-    public class HomePageCtrl : Singleton<HomePageCtrl>
-    {
-        public void Enter()
-        {
-            EventCenter.Broadcast(EGameEvent.eGameEvent_HomePageEnter);
-        }
+namespace BlGame.Ctrl {
+public class HomePageCtrl : Singleton<HomePageCtrl> {
+    public void Enter() { EventCenter.Broadcast(EGameEvent.eGameEvent_HomePageEnter); }
 
-        public void Exit()
-        {
-            EventCenter.Broadcast(EGameEvent.eGameEvent_HomePageExit);
-        }
+    public void Exit() { EventCenter.Broadcast(EGameEvent.eGameEvent_HomePageExit); }
 
-        public void AskQuickPlay(int id, EBattleMatchType type)
-        {
-            CGLCtrl_GameLogic.Instance.AskMatchBattle(id, type);
-            CGLCtrl_GameLogic.Instance.AskStartTeamMatch();
-        }
+    public void AskQuickPlay(int id, EBattleMatchType type) {
+        CGLCtrl_GameLogic.Instance.AskMatchBattle(id, type);
+        CGLCtrl_GameLogic.Instance.AskStartTeamMatch();
     }
+}
 }
